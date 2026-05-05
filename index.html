@@ -160,13 +160,6 @@
             font-size: 0.875rem;
         }
 
-        .btn-hero {
-            padding: 1.25rem 3.5rem;
-            border-radius: 9999px;
-            font-size: 1rem;
-            margin-top: 3rem;
-        }
-
         /* TỐI ƯU UX/UI: Chống lỗi "Sticky Hover" (nút bị kẹt màu khi chạm tay trên điện thoại) */
         @media (hover: hover) {
             .nav-links a:hover {
@@ -186,7 +179,8 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 8rem 1.5rem 10rem;
+            /* Đã thay đổi padding để chữ được căn giữa hoàn hảo khi loại bỏ nút Begin Journey */
+            padding: 4rem 1.5rem;
             min-height: calc(100vh - 100px);
         }
 
@@ -223,10 +217,6 @@
         @media (max-width: 768px) {
             h1 {
                 letter-spacing: -1px; /* Tránh chữ dính quá sát nhau trên màn hình nhỏ */
-            }
-            .btn-hero {
-                width: 90%; /* Kéo dài nút để ngón tay dễ chạm hơn */
-                max-width: 320px;
             }
         }
 
@@ -337,11 +327,7 @@
             everything <em>happens</em> for <br>
             <em>a reason.</em>
         </h1>
-
-        <!-- Thêm class .trigger-modal để JS nhận diện nút -->
-        <a href="#" class="liquid-glass btn-hero animate-3 trigger-modal">
-            Begin Journey
-        </a>
+        <!-- Nút ở khu vực này đã được loại bỏ để làm nổi bật Typography -->
     </main>
 
     <!-- Modal / Khung trượt từ dưới lên -->
@@ -349,7 +335,7 @@
         <div class="modal-box">
             <button id="close-modal" class="close-modal-btn">&times;</button>
             <h2 class="modal-title">Em rất chào chị</h2>
-            <p class="modal-subtext">Mỗi một lần chạm sẽ khiến em đỡ đau đầu hơn =)))) Nhờ chị chạm vài lần giúp em nhen </p>
+            <p class="modal-subtext">Mỗi một lần chạm sẽ khiến em đỡ đau đầu hơn =)))) Nhờ chị chạm vài lần giúp em nhen</p>
         </div>
     </div>
 
