@@ -230,6 +230,79 @@
             }
         }
 
+        /* 8. HIỆU ỨNG TRƯỢT TỪ DƯỚI LÊN (MODAL) */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: rgba(20, 20, 20, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px; /* Bo tròn ở các góc */
+            padding: 3.5rem 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            transform: translateY(100vh); /* Đẩy xuống dưới cùng màn hình lúc ban đầu */
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: translateY(0); /* Trượt lên vị trí trung tâm */
+        }
+
+        .modal-title {
+            font-family: var(--font-display);
+            font-size: 3.5rem;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            color: var(--foreground);
+            letter-spacing: -0.02em;
+        }
+
+        .modal-subtext {
+            font-size: 1.125rem;
+            color: var(--muted-foreground);
+            line-height: 1.6;
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--muted-foreground);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            line-height: 1;
+        }
+
+        @media (hover: hover) {
+            .close-modal-btn:hover {
+                color: var(--foreground);
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -254,8 +327,8 @@
             <a href="#"></a>
         </div>
 
-        <!-- TỐI ƯU UX/UI: Đổi div thành thẻ <a> để chuẩn Semantics web -->
-        <a href="#" class="liquid-glass btn-nav">Begin Journey</a>
+        <!-- Thêm class .trigger-modal để JS nhận diện nút -->
+        <a href="#" class="liquid-glass btn-nav trigger-modal">Begin Journey</a>
     </nav>
 
     <!-- Hero Section -->
@@ -265,11 +338,48 @@
             <em>a reason.</em>
         </h1>
 
-        <!-- TỐI ƯU UX/UI: Đổi div thành thẻ <a> -->
-        <a href="#" class="liquid-glass btn-hero animate-3">
+        <!-- Thêm class .trigger-modal để JS nhận diện nút -->
+        <a href="#" class="liquid-glass btn-hero animate-3 trigger-modal">
             Begin Journey
         </a>
     </main>
 
+    <!-- Modal / Khung trượt từ dưới lên -->
+    <div id="journey-modal" class="modal-overlay">
+        <div class="modal-box">
+            <button id="close-modal" class="close-modal-btn">&times;</button>
+            <h2 class="modal-title">Em rất chào chị</h2>
+            <p class="modal-subtext">Mỗi một lần chạm sẽ khiến em đỡ đau đầu hơn =)))) Nhờ chị chạm vài lần giúp em nhen </p>
+        </div>
+    </div>
+
+    <!-- Script điều khiển chức năng đóng/mở Modal -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const triggers = document.querySelectorAll('.trigger-modal');
+            const modal = document.getElementById('journey-modal');
+            const closeBtn = document.getElementById('close-modal');
+
+            // Mở modal khi bấm vào bất kỳ nút "Begin Journey" nào
+            triggers.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault(); // Ngăn trang web nhảy lên đầu trang
+                    modal.classList.add('active');
+                });
+            });
+
+            // Đóng modal khi bấm vào nút "X"
+            closeBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+
+            // Đóng modal khi bấm ra ngoài khung (bấm vào vùng nền đen mờ)
+            modal.addEventListener('click', (e) => {
+                if(e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
