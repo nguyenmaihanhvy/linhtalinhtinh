@@ -19,6 +19,12 @@
             --liquid-bg: rgba(255, 255, 255, 0.01);
         }
 
+        /* TỐI ƯU UX/UI: Chống phóng to chữ sai lệch trên iOS và bật thao tác chạm mượt */
+        html {
+            -webkit-text-size-adjust: 100%;
+            touch-action: manipulation;
+        }
+
         /* 2. RESET & BASE STYLES */
         * {
             margin: 0;
@@ -50,6 +56,16 @@
             height: 100%;
             object-cover: cover;
             object-fit: cover;
+        }
+
+        /* TỐI ƯU UX/UI: Thêm lớp phủ mờ nhẹ để chữ trắng luôn nổi bật, dễ đọc bất chấp video phía sau */
+        .video-container::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            pointer-events: none;
         }
 
         /* 4. NAVIGATION */
@@ -91,9 +107,14 @@
             font-size: 0.875rem;
             color: var(--muted-foreground);
             transition: color 0.3s ease;
+            
+            /* TỐI ƯU UX/UI: Tăng vùng chạm tối thiểu cho ngón tay trên mobile */
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
         }
 
-        .nav-links a.active, .nav-links a:hover {
+        .nav-links a.active {
             color: var(--foreground);
         }
 
@@ -110,6 +131,10 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            text-decoration: none;
+            
+            /* TỐI ƯU UX/UI: Đảm bảo nút đủ lớn để chạm dễ dàng */
+            min-height: 44px;
         }
 
         .liquid-glass::before {
@@ -142,8 +167,14 @@
             margin-top: 3rem;
         }
 
-        .liquid-glass:hover {
-            transform: scale(1.03);
+        /* TỐI ƯU UX/UI: Chống lỗi "Sticky Hover" (nút bị kẹt màu khi chạm tay trên điện thoại) */
+        @media (hover: hover) {
+            .nav-links a:hover {
+                color: var(--foreground);
+            }
+            .liquid-glass:hover {
+                transform: scale(1.03);
+            }
         }
 
         /* 6. HERO SECTION */
@@ -168,17 +199,15 @@
             max-width: 1200px;
         }
 
+        /* CSS MỚI: Điều chỉnh màu chữ và hiệu ứng phát sáng vàng */
         h1 em {
             font-style: normal;
-            color: var(--muted-foreground);
-        }
-
-        .subtext {
-            color: var(--muted-foreground);
-            font-size: clamp(1rem, 2vw, 1.125rem);
-            max-width: 42rem;
-            margin-top: 2rem;
-            line-height: 1.6;
+            color: white; /* Đổi màu chữ sang trắng */
+            /* Tạo hiệu ứng phát sáng vàng (Gold glow) bằng nhiều lớp text-shadow */
+            text-shadow: 
+                0 0 10px rgba(255, 215, 0, 0.7), /* Lớp sáng vàng gần */
+                0 0 20px rgba(255, 215, 0, 0.5), /* Lớp sáng vàng xa hơn chút */
+                0 0 30px rgba(255, 215, 0, 0.3); /* Lớp sáng vàng lan tỏa mờ */
         }
 
         /* 7. ANIMATIONS */
@@ -188,8 +217,18 @@
         }
 
         .animate-1 { animation: fadeRise 0.8s ease-out forwards; }
-        .animate-2 { animation: fadeRise 0.8s ease-out 0.2s both; }
         .animate-3 { animation: fadeRise 0.8s ease-out 0.4s both; }
+
+        /* TỐI ƯU UX/UI: Căn chỉnh lại nhẹ nhàng cho màn hình Mobile */
+        @media (max-width: 768px) {
+            h1 {
+                letter-spacing: -1px; /* Tránh chữ dính quá sát nhau trên màn hình nhỏ */
+            }
+            .btn-hero {
+                width: 90%; /* Kéo dài nút để ngón tay dễ chạm hơn */
+                max-width: 320px;
+            }
+        }
 
     </style>
 </head>
@@ -197,7 +236,8 @@
 
     <!-- Background Video -->
     <div class="video-container">
-        <video autoplay loop muted playsinline>
+        <!-- TỐI ƯU UX/UI: Bổ sung preload="metadata" để load nhanh và mượt hơn -->
+        <video autoplay loop muted playsinline preload="metadata">
             <source src="265731_medium.mp4" type="video/mp4">
         </video>
     </div>
@@ -214,7 +254,8 @@
             <a href="#"></a>
         </div>
 
-        <div class="liquid-glass btn-nav">Begin Journey</div>
+        <!-- TỐI ƯU UX/UI: Đổi div thành thẻ <a> để chuẩn Semantics web -->
+        <a href="#" class="liquid-glass btn-nav">Begin Journey</a>
     </nav>
 
     <!-- Hero Section -->
@@ -224,9 +265,10 @@
             <em>a reason.</em>
         </h1>
 
-        <div class="liquid-glass btn-hero animate-3">
+        <!-- TỐI ƯU UX/UI: Đổi div thành thẻ <a> -->
+        <a href="#" class="liquid-glass btn-hero animate-3">
             Begin Journey
-        </div>
+        </a>
     </main>
 
 </body>
