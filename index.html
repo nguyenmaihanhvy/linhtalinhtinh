@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HanhVy | linhtalinhtinh</title>
@@ -190,7 +191,59 @@
         .animate-1 { animation: fadeRise 0.8s ease-out forwards; }
         .animate-2 { animation: fadeRise 0.8s ease-out 0.2s both; }
         .animate-3 { animation: fadeRise 0.8s ease-out 0.4s both; }
+/* Màu sắc bổ sung */
+:root {
+    --lime: #DCFF00;
+    --lime-variant: #D8F90A;
+    --card-bg: #111111;
+}
 
+/* Container bọc ngoài để tạo cảm giác giống Email Newsletter */
+.email-container {
+    max-width: 640px;
+    margin: 4rem auto;
+    background: var(--card-bg);
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* Nút bấm Lime (Chanh) */
+.primary-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--lime);
+    color: #0A0A0A;
+    font-weight: 700;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.primary-button:hover {
+    background: #c9ea00;
+    transform: translateY(-2px);
+}
+
+/* Cấu trúc các bước (Steps) */
+.step-row { 
+    display: flex; 
+    gap: 1.25rem; 
+    margin-bottom: 1.5rem; 
+    text-align: left; 
+}
+.step-num { 
+    flex-shrink: 0; width: 1.75rem; height: 1.75rem; 
+    background: var(--lime); color: black; 
+    font-weight: 700; font-size: 0.75rem; 
+    display: flex; align-items: center; justify-content: center; border-radius: 6px;
+}
+
+/* Hiệu ứng Video Card */
+.video-card { border-radius: 14px; overflow: hidden; margin: 2rem 0; }
+.video-card video { width: 100%; height: 370px; object-fit: cover; transition: 0.7s; }
+.video-card:hover video { transform: scale(1.03); }
     </style>
 </head>
 <body>
@@ -198,7 +251,7 @@
     <!-- Background Video -->
     <div class="video-container">
     <video autoplay loop muted playsinline>
-        <source src="265731_medium.mp4" type="video/mp4">
+        <source src="270434_medium.mp4" type="video/mp4">
     </video>
 </div>
 
@@ -214,20 +267,55 @@
             <a href="#"></a>
         </div>
 
-        <div class="liquid-glass btn-nav">Begin Journey</div>
+        <a href="#journey" class="liquid-glass btn-nav" style="text-decoration: none;">Begin Journey</a>
     </nav>
 
     <!-- Hero Section -->
     <main class="hero">
-        <h1 class="animate-1">
-            everything <em>happens</em> for <br>
-            <em>a reason.</em>
-        </h1>
+    <h1 class="animate-1">
+        everything <em>happens</em> for <br>
+        <em>a reason.</em>
+    </h1>
 
-        <div class="liquid-glass btn-hero animate-3">
-            Begin Journey
+    <!-- Sửa div thành thẻ a -->
+    <a href="#journey" class="liquid-glass btn-hero animate-3" style="text-decoration: none;">
+        Begin Journey
+    </a>
+</main>
+    <section id="journey" style="padding: 5rem 1rem;">
+    <div class="email-container">
+        <!-- Toàn bộ code nội dung Email-style (Secton 2, 3, 4...) dán vào đây -->
+    </div>
+</section>
+<section id="journey" style="padding: 5rem 1rem;">
+    <div class="email-container">
+        <!-- Banner Khóa học -->
+        <div style="position: relative; aspect-ratio: 640/820; overflow: hidden;">
+            <video autoplay loop muted playsinline style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;">
+                <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260419_064822_f120e48a-d545-45dd-a02d-facb07829888.mp4" type="video/mp4">
+            </video>
+            <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 50%, #111 100%);"></div>
+            <div style="position: relative; z-index: 5; padding: 2rem; text-align: center;">
+                <h2 style="font-family: var(--font-display); font-size: 58px; line-height: 1.02; margin-top: 25rem;">Learn to lead AI</h2>
+                <a href="#" class="primary-button" style="margin-top: 2rem;">Enroll Now <i data-lucide="arrow-right"></i></a>
+            </div>
         </div>
-    </main>
 
+        <!-- Các bước nội dung -->
+        <div style="padding: 3rem 4rem;">
+            <div class="step-row">
+                <div class="step-num">1</div>
+                <p>Learn how to spot AI opportunities that boost productivity.</p>
+            </div>
+            <div class="step-row">
+                <div class="step-num">2</div>
+                <p>Build structures that support your team so AI efficiencies multiply.</p>
+            </div>
+        </div>
+    </div>
+</section>
+    <script>
+    lucide.createIcons();
+</script>
 </body>
 </html>
