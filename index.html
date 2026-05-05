@@ -3,293 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Velorah® | Cinematic Slide-up Overlay</title>
+    <title>HanhVy | linhtalinhtinh</title>
     
     <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
     <style>
-        /* === HỆ THỐNG BIẾN === */
+        /* 1. CSS VARIABLES - Hệ thống quản lý màu sắc */
         :root {
+            --background: #002b42; /* Deep Navy Blue */
+            --foreground: #ffffff;
+            --muted-foreground: #a1a1aa;
             --font-display: 'Instrument Serif', serif;
             --font-body: 'Inter', sans-serif;
-            --lime: #DCFF00;
-            --lime-variant: #D8F90A;
-            --text-main: #F2F2F2;
-            --text-muted: #83837D;
+            --liquid-bg: rgba(255, 255, 255, 0.01);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
-            font-family: var(--font-body); 
-            background-color: #050505; 
-            color: var(--text-main); 
-            -webkit-font-smoothing: antialiased; 
+        /* 2. RESET & BASE STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: var(--font-body);
             overflow-x: hidden;
-            /* Ngăn cuộn trang mặc định để ưu tiên khung trượt */
-            overflow-y: hidden; 
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* === 1. VIDEO NỀN LUÔN CỐ ĐỊNH === */
-        .bg-video-container {
-            position: fixed;
+        /* 3. VIDEO BACKGROUND */
+        .video-container {
+            position: absolute;
             inset: 0;
             width: 100%;
             height: 100%;
             z-index: 0;
-        }
-        .bg-video-container video {
-            width: 100%; height: 100%; object-fit: cover;
-        }
-        .bg-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(5,5,5,0) 40%, rgba(5,5,5,0.7) 100%);
+            overflow: hidden;
         }
 
-        /* === 2. MÀN HÌNH CHÍNH (HERO) === */
-        .hero-section {
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-cover: cover;
+            object-fit: cover;
+        }
+
+        /* 4. NAVIGATION */
+        nav {
             position: relative;
             z-index: 10;
-            height: 100vh;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
         }
-        nav {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 2rem; max-width: 1280px; margin: 0 auto; width: 100%;
-        }
-        .hero-content {
-            flex: 1; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; text-align: center; padding: 0 1rem;
-        }
-        .hero-title {
+
+        .logo {
             font-family: var(--font-display);
-            font-size: clamp(3rem, 8vw, 6rem); line-height: 0.95; margin-bottom: 2rem;
+            font-size: 1.875rem;
             letter-spacing: -0.02em;
         }
 
-        /* Nút Kính lỏng */
+        .logo sup {
+            font-size: 0.75rem;
+            margin-left: 2px;
+        }
+
+        .nav-links {
+            display: none;
+        }
+
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+                gap: 2.5rem;
+            }
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a.active, .nav-links a:hover {
+            color: var(--foreground);
+        }
+
+        /* 5. LIQUID GLASS EFFECT (Kỹ thuật cao cấp) */
         .liquid-glass {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            padding: 1.2rem 3.5rem; border-radius: 9999px;
-            color: white; text-decoration: none; font-weight: 500;
-            border: 1px solid rgba(255,255,255,0.2);
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            background: var(--liquid-bg);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: none;
+            position: relative;
             cursor: pointer;
-        }
-        @media (hover: hover) {
-            .liquid-glass:hover { transform: translateY(-3px); background: rgba(255,255,255,0.15); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+            color: var(--foreground);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* === 3. KHUNG TRƯỢT TỪ DƯỚI LÊN (OVERLAY) === */
-        .slide-overlay {
-            position: fixed;
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
             inset: 0;
-            z-index: 50;
-            /* Hiệu ứng kính mờ cho toàn bộ khung trượt */
-            background: rgba(10, 10, 10, 0.3);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            
-            /* Cấu hình trượt */
-            transform: translateY(100%);
-            transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-            
-            /* Cho phép cuộn nội dung BÊN TRONG khung này */
-            overflow-y: auto;
-            padding: 4rem 1rem;
+            border-radius: inherit;
+            padding: 1.4px;
+            background: linear-gradient(180deg, 
+                rgba(255,255,255,0.45) 0%, 
+                rgba(255,255,255,0.1) 40%, 
+                rgba(255,255,255,0.1) 60%, 
+                rgba(255,255,255,0.45) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask-composite: xor;
+            pointer-events: none;
         }
 
-        /* Khi được kích hoạt (Thêm class active bằng JS) */
-        .slide-overlay.active {
-            transform: translateY(0);
+        .btn-nav {
+            padding: 0.6rem 1.5rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
         }
 
-        /* Nút đóng (X) */
-        .close-btn {
-            position: fixed;
-            top: 2rem; right: 2rem;
-            width: 44px; height: 44px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 60;
-            opacity: 0; pointer-events: none;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-        .slide-overlay.active ~ .close-btn {
-            opacity: 1; pointer-events: auto; /* Hiện nút X khi khung chạy lên */
-        }
-        @media (hover: hover) {
-            .close-btn:hover { background: white; color: black; transform: rotate(90deg); }
+        .btn-hero {
+            padding: 1.25rem 3.5rem;
+            border-radius: 9999px;
+            font-size: 1rem;
+            margin-top: 3rem;
         }
 
-        /* === 4. NỘI DUNG EMAIL BÊN TRONG KHUNG TRƯỢT === */
-        .email-container {
-            max-width: 640px; margin: 0 auto;
-            /* Container trong suốt để đồng bộ với hiệu ứng Glass */
-            background: rgba(17, 17, 17, 0.4);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        .liquid-glass:hover {
+            transform: scale(1.03);
         }
 
-        .email-hero { position: relative; aspect-ratio: 640/820; overflow: hidden; display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 3rem; }
-        .email-hero video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
-        .email-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 30%, rgba(17,17,17,0.9) 100%); z-index: 1; }
-        
-        .primary-button {
-            display: inline-flex; align-items: center; gap: 0.75rem;
-            background: var(--lime); color: #0A0A0A; font-weight: 700;
-            padding: 0.8rem 1.5rem; border-radius: 8px; text-decoration: none;
-            transition: all 0.2s ease; border: none; cursor: pointer;
+        /* 6. HERO SECTION */
+        .hero {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 1.5rem 10rem;
+            min-height: calc(100vh - 100px);
         }
-        @media (hover: hover) {
-            .primary-button:hover { background: #c9ea00; transform: translateY(-2px); }
-        }
-        
-        .step-row { display: flex; gap: 1.25rem; margin-bottom: 1.5rem; text-align: left; }
-        .step-num { flex-shrink: 0; width: 1.75rem; height: 1.75rem; background: var(--lime); color: black; font-weight: 700; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; border-radius: 6px; }
-        .font-serif { font-family: var(--font-display); }
 
-        /* Mobile Adjustments */
-        @media (max-width: 768px) {
-            .email-container { width: 100%; border-radius: 0; border: none; }
-            .slide-overlay { padding: 0; }
-            .close-btn { top: 1rem; right: 1rem; }
+        h1 {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 10vw, 8rem);
+            line-height: 0.95;
+            letter-spacing: -2.46px;
+            font-weight: 400;
+            max-width: 1200px;
         }
+
+        h1 em {
+            font-style: normal;
+            color: var(--muted-foreground);
+        }
+
+        .subtext {
+            color: var(--muted-foreground);
+            font-size: clamp(1rem, 2vw, 1.125rem);
+            max-width: 42rem;
+            margin-top: 2rem;
+            line-height: 1.6;
+        }
+
+        /* 7. ANIMATIONS */
+        @keyframes fadeRise {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-1 { animation: fadeRise 0.8s ease-out forwards; }
+        .animate-2 { animation: fadeRise 0.8s ease-out 0.2s both; }
+        .animate-3 { animation: fadeRise 0.8s ease-out 0.4s both; }
+
     </style>
 </head>
 <body>
 
-    <!-- 1. VIDEO NỀN (Nằm dưới cùng, cố định) -->
+    <!-- Background Video -->
     <div class="video-container">
-    <video autoplay loop muted playsinline>
-        <source src="265731_medium.mp4" type="video/mp4">
-    </video>
-</div>
+        <video autoplay loop muted playsinline>
+            <source src="265731_medium.mp4" type="video/mp4">
+        </video>
+    </div>
 
-    <!-- 2. MÀN HÌNH CHÍNH HIỂN THỊ BAN ĐẦU -->
-    <main class="hero-section">
-        <nav>
-            <div class="font-serif" style="font-size: 28px;">Velorah<sup style="font-size: 12px; margin-left:2px;">®</sup></div>
-            <div class="liquid-glass" style="padding: 0.6rem 1.5rem; font-size: 14px;">Studio</div>
-        </nav>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">LoveU<sup></sup></div>
+        
+        <div class="nav-links">
+            <a href="#" class="active"></a>
+            <a href="#"></a>
+            <a href="#"></a>
+            <a href="#"></a>
+            <a href="#"></a>
+        </div>
 
-        <div class="hero-content">
-            <h1 class="hero-title">Where dreams rise <br> <em style="color: var(--text-muted); font-style: normal;">through the silence.</em></h1>
-            <!-- Thêm ID "trigger-btn" để dùng JS gọi -->
-            <button id="trigger-btn" class="liquid-glass">Begin Journey</button>
+        <div class="liquid-glass btn-nav">Begin Journey</div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="hero">
+        <h1 class="animate-1">
+            everything <em>happens</em> for <br>
+            <em>a reason.</em>
+        </h1>
+
+        <div class="liquid-glass btn-hero animate-3">
+            Begin Journey
         </div>
     </main>
 
-    <!-- 3. KHUNG TRƯỢT TỪ DƯỚI LÊN -->
-    <section id="slide-panel" class="slide-overlay">
-        
-        <!-- Nội dung Design Rocket Email Landing Page -->
-        <div class="email-container">
-            <!-- Video Hero của Khóa Học -->
-            <div class="email-hero">
-                <video 
-    autoplay 
-    loop 
-    muted 
-    playsinline 
-    preload="metadata" 
-    poster="link-anh-chup-man-hinh-video.png"
->
-    <source src="265731_medium.mp4" type="video/mp4">
-</video>
-                <div class="email-hero-overlay"></div>
-                <div style="position: relative; z-index: 5; margin-top: 1rem;">
-                    <div class="font-serif" style="font-size: 28px;">Design Rocket</div>
-                    <div style="font-size: 13px; letter-spacing: 0.22em; opacity: 0.8; margin-top: 4px;">CERTIFICATES</div>
-                </div>
-                
-                <div style="position: absolute; bottom: 3rem; z-index: 5; padding: 0 2rem; width: 100%;">
-                    <h2 class="font-serif" style="font-size: 58px; line-height: 1.02;">Learn to lead AI <br> and unlock new value</h2>
-                    <a href="#" class="primary-button" style="margin-top: 2.5rem; border-radius: 9999px; background: var(--lime-variant); padding: 1rem 2rem;">
-                        Enroll Now <i data-lucide="arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Các Bước (Steps) -->
-            <div style="padding: 4rem 3rem; background: transparent;">
-                <p style="font-size: 18px; line-height: 1.55; text-align: center; margin-bottom: 3rem;">
-                    Built in collaboration with Microsoft, this certificate course gives you the toolkit to lead AI transformation across your organization.
-                </p>
-                
-                <h2 class="font-serif" style="font-size: 46px; text-align: center; margin-bottom: 2rem;">Transform how you lead</h2>
-                
-                <div style="max-width: 480px; margin: 0 auto;">
-                    <div class="step-row">
-                        <div class="step-num">1</div>
-                        <p>Learn how to spot AI opportunities that boost productivity across roles and deliver visible results.</p>
-                    </div>
-                    <div class="step-row">
-                        <div class="step-num">2</div>
-                        <p>Build structures that support your team so AI efficiencies multiply across the organization.</p>
-                    </div>
-                </div>
-
-                <div style="text-align: center; margin-top: 3rem;">
-                    <a href="#" class="primary-button">Get Started <i data-lucide="arrow-right"></i></a>
-                </div>
-            </div>
-            
-            <!-- Footer trong Khung -->
-            <footer style="background: rgba(8, 8, 8, 0.6); padding: 3rem 2rem; text-align: center; font-size: 12px; color: var(--text-muted); border-top: 1px solid rgba(255,255,255,0.1);">
-                <div class="font-serif" style="font-size: 30px; color: white; margin-bottom: 1rem;">Design Rocket</div>
-                <p>©2026 Design Rocket, San Francisco, CA</p>
-            </footer>
-        </div>
-    </section>
-
-    <!-- Nút Đóng (Nằm ngoài email container để nổi lên trên cùng) -->
-    <button id="close-btn" class="close-btn" aria-label="Close overlay">
-        <i data-lucide="x"></i>
-    </button>
-
-    <!-- Kịch bản điều khiển (Logic) -->
-    <script>
-        // Kích hoạt Icon
-        lucide.createIcons();
-
-        // Xử lý sự kiện Trượt lên / Trượt xuống
-        const triggerBtn = document.getElementById('trigger-btn');
-        const slidePanel = document.getElementById('slide-panel');
-        const closeBtn = document.getElementById('close-btn');
-
-        // Khi bấm "Begin Journey"
-        triggerBtn.addEventListener('click', () => {
-            slidePanel.classList.add('active'); // Kích hoạt CSS dịch chuyển lên
-            // Tùy chọn: Cuộn khung trượt về trên cùng khi mở lại
-            slidePanel.scrollTop = 0; 
-        });
-
-        // Khi bấm "Nút X"
-        closeBtn.addEventListener('click', () => {
-            slidePanel.classList.remove('active'); // Xóa CSS kích hoạt -> Tự động trượt xuống
-        });
-
-        // Tùy chọn nâng cao: Bấm ra ngoài vùng chứa email (bấm vào phần kính mờ) để đóng
-        slidePanel.addEventListener('click', (e) => {
-            if (e.target === slidePanel) {
-                slidePanel.classList.remove('active');
-            }
-        });
-    </script>
 </body>
 </html>
