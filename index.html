@@ -1,161 +1,238 @@
-/** @type {import('tailwindcss').Config} */
-export default {
-  content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
-  theme: {
-    extend: {
-      colors: {
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        border: "hsl(var(--border))",
-      },
-      fontFamily: {
-        display: ["var(--font-display)", "serif"],
-        body: ["var(--font-body)", "sans-serif"],
-      },
-    },
-  },
-  plugins: [],
-};
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap');
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velorah® | Cinematic Portfolio</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 1. CSS VARIABLES - Hệ thống quản lý màu sắc */
+        :root {
+            --background: #002b42; /* Deep Navy Blue */
+            --foreground: #ffffff;
+            --muted-foreground: #a1a1aa;
+            --font-display: 'Instrument Serif', serif;
+            --font-body: 'Inter', sans-serif;
+            --liquid-bg: rgba(255, 255, 255, 0.01);
+        }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+        /* 2. RESET & BASE STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-@layer base {
-  :root {
-    --background: 201 100% 13%;
-    --foreground: 0 0% 100%;
-    --muted-foreground: 240 4% 66%;
-    --primary: 0 0% 100%;
-    --primary-foreground: 0 0% 4%;
-    --secondary: 0 0% 10%;
-    --muted: 0 0% 10%;
-    --accent: 0 0% 10%;
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    --font-display: 'Instrument Serif', serif;
-    --font-body: 'Inter', sans-serif;
-  }
-}
+        /* 3. VIDEO BACKGROUND */
+        .video-container {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
 
-body {
-  @apply bg-background text-foreground font-body antialiased;
-}
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-cover: cover;
+            object-fit: cover;
+        }
 
-@layer components {
-  .liquid-glass {
-    background: rgba(255, 255, 255, 0.01);
-    background-blend-mode: luminosity;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    position: relative;
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  }
+        /* 4. NAVIGATION */
+        nav {
+            position: relative;
+            z-index: 10;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-  .liquid-glass::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1.4px; /* Border thickness */
-    background: linear-gradient(180deg,
-        rgba(255, 255, 255, 0.45) 0%,
-        rgba(255, 255, 255, 0.15) 20%,
-        rgba(255, 255, 255, 0) 40%,
-        rgba(255, 255, 255, 0) 60%,
-        rgba(255, 255, 255, 0.15) 80%,
-        rgba(255, 255, 255, 0.45) 100%);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-  }
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.875rem;
+            letter-spacing: -0.02em;
+        }
 
-  @keyframes fade-rise {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+        .logo sup {
+            font-size: 0.75rem;
+            margin-left: 2px;
+        }
 
-  .animate-fade-rise { animation: fade-rise 0.8s ease-out both; }
-  .animate-fade-rise-delay { animation: fade-rise 0.8s ease-out 0.2s both; }
-  .animate-fade-rise-delay-2 { animation: fade-rise 0.8s ease-out 0.4s both; }
-}
-import React from 'react';
+        .nav-links {
+            display: none;
+        }
 
-const Hero = () => {
-  const displayFont = { fontFamily: "'Instrument Serif', serif" };
+        @media (min-width: 768px) {
+            .nav-links {
+                display: flex;
+                gap: 2.5rem;
+            }
+        }
 
-  return (
-    <div className="relative min-h-screen w-full flex flex-col overflow-hidden">
-      {/* Background Video */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 z-0 h-full w-full object-cover"
-      >
-        <source 
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" 
-          type="video/mp4" 
-        />
-      </video>
+        .nav-links a {
+            text-decoration: none;
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            transition: color 0.3s ease;
+        }
 
-      {/* Navigation Bar */}
-      <nav className="relative z-10 w-full max-w-7xl mx-auto px-8 py-6 flex items-center justify-between">
-        <div style={displayFont} className="text-3xl tracking-tight text-foreground">
-          Velorah<sup className="text-xs">®</sup>
+        .nav-links a.active, .nav-links a:hover {
+            color: var(--foreground);
+        }
+
+        /* 5. LIQUID GLASS EFFECT (Kỹ thuật cao cấp) */
+        .liquid-glass {
+            background: var(--liquid-bg);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: none;
+            position: relative;
+            cursor: pointer;
+            color: var(--foreground);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1.4px;
+            background: linear-gradient(180deg, 
+                rgba(255,255,255,0.45) 0%, 
+                rgba(255,255,255,0.1) 40%, 
+                rgba(255,255,255,0.1) 60%, 
+                rgba(255,255,255,0.45) 100%);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask-composite: xor;
+            pointer-events: none;
+        }
+
+        .btn-nav {
+            padding: 0.6rem 1.5rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+
+        .btn-hero {
+            padding: 1.25rem 3.5rem;
+            border-radius: 9999px;
+            font-size: 1rem;
+            margin-top: 3rem;
+        }
+
+        .liquid-glass:hover {
+            transform: scale(1.03);
+        }
+
+        /* 6. HERO SECTION */
+        .hero {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 1.5rem 10rem;
+            min-height: calc(100vh - 100px);
+        }
+
+        h1 {
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 10vw, 8rem);
+            line-height: 0.95;
+            letter-spacing: -2.46px;
+            font-weight: 400;
+            max-width: 1200px;
+        }
+
+        h1 em {
+            font-style: normal;
+            color: var(--muted-foreground);
+        }
+
+        .subtext {
+            color: var(--muted-foreground);
+            font-size: clamp(1rem, 2vw, 1.125rem);
+            max-width: 42rem;
+            margin-top: 2rem;
+            line-height: 1.6;
+        }
+
+        /* 7. ANIMATIONS */
+        @keyframes fadeRise {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-1 { animation: fadeRise 0.8s ease-out forwards; }
+        .animate-2 { animation: fadeRise 0.8s ease-out 0.2s both; }
+        .animate-3 { animation: fadeRise 0.8s ease-out 0.4s both; }
+
+    </style>
+</head>
+<body>
+
+    <!-- Background Video -->
+    <div class="video-container">
+        <video autoplay loop muted playsinline>
+            <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">Velorah<sup>®</sup></div>
+        
+        <div class="nav-links">
+            <a href="#" class="active">Home</a>
+            <a href="#">Studio</a>
+            <a href="#">About</a>
+            <a href="#">Journal</a>
+            <a href="#">Reach Us</a>
         </div>
 
-        <div className="hidden md:flex items-center gap-10">
-          {['Home', 'Studio', 'About', 'Journal', 'Reach Us'].map((item) => (
-            <a
-              key={item}
-              href="#"
-              className={`text-sm transition-colors duration-300 ${
-                item === 'Home' ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              {item}
-            </a>
-          ))}
-        </div>
+        <div class="liquid-glass btn-nav">Begin Journey</div>
+    </nav>
 
-        <button className="liquid-glass rounded-full px-6 py-2.5 text-sm text-foreground hover:scale-[1.03]">
-          Begin Journey
-        </button>
-      </nav>
-
-      {/* Hero Content */}
-      <section className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6 py-[90px]">
-        <h1 
-          style={displayFont}
-          className="animate-fade-rise text-5xl sm:text-7xl md:text-8xl leading-[0.95] tracking-[-2.46px] max-w-7xl font-normal"
-        >
-          Where <em className="not-italic text-muted-foreground">dreams</em> rise <br />
-          <em className="not-italic text-muted-foreground">through the silence.</em>
+    <!-- Hero Section -->
+    <main class="hero">
+        <h1 class="animate-1">
+            Where <em>dreams</em> rise <br>
+            <em>through the silence.</em>
         </h1>
 
-        <p className="animate-fade-rise-delay text-muted-foreground text-base sm:text-lg max-w-2xl mt-8 leading-relaxed">
-          We're designing tools for deep thinkers, bold creators, and quiet rebels. 
-          Amid the chaos, we build digital spaces for sharp focus and inspired work.
+        <p class="subtext animate-2">
+            We're designing tools for deep thinkers, bold creators, and quiet rebels. 
+            Amid the chaos, we build digital spaces for sharp focus and inspired work.
         </p>
 
-        <button 
-          className="liquid-glass animate-fade-rise-delay-2 rounded-full px-14 py-5 text-base text-foreground mt-12 hover:scale-[1.03] cursor-pointer"
-        >
-          Begin Journey
-        </button>
-      </section>
-    </div>
-  );
-};
+        <div class="liquid-glass btn-hero animate-3">
+            Begin Journey
+        </div>
+    </main>
 
-export default Hero;
+</body>
+</html>
