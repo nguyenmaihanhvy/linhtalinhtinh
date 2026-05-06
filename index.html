@@ -9,23 +9,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
-        /* 1. CSS VARIABLES - Hệ thống quản lý màu sắc */
+        /* 1. CSS VARIABLES - Giữ nguyên hệ màu Navy Blue của bạn */
         :root {
-            --background: #002b42; /* Deep Navy Blue */
+            --background: #002b42; 
             --foreground: #ffffff;
             --muted-foreground: #a1a1aa;
             --font-display: 'Instrument Serif', serif;
             --font-body: 'Inter', sans-serif;
             --liquid-bg: rgba(255, 255, 255, 0.01);
+            --gold-glow: rgba(255, 215, 0, 0.6);
         }
 
-        /* TỐI ƯU UX/UI: Chống phóng to chữ sai lệch trên iOS và bật thao tác chạm mượt */
-        html {
+        /* TỐI ƯU UX: Chống rung lắc trên mobile */
+        html, body {
+            overflow-x: hidden;
             -webkit-text-size-adjust: 100%;
             touch-action: manipulation;
+            height: 100%;
         }
 
-        /* 2. RESET & BASE STYLES */
         * {
             margin: 0;
             padding: 0;
@@ -36,12 +38,11 @@
             background-color: var(--background);
             color: var(--foreground);
             font-family: var(--font-body);
-            overflow-x: hidden;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 3. VIDEO BACKGROUND */
+        /* 2. VIDEO BACKGROUND - Giữ nguyên lớp phủ 0.2 */
         .video-container {
             position: absolute;
             inset: 0;
@@ -54,11 +55,9 @@
         .video-container video {
             width: 100%;
             height: 100%;
-            object-cover: cover;
             object-fit: cover;
         }
 
-        /* TỐI ƯU UX/UI: Thêm lớp phủ mờ nhẹ để chữ trắng luôn nổi bật, dễ đọc bất chấp video phía sau */
         .video-container::after {
             content: '';
             position: absolute;
@@ -68,10 +67,10 @@
             pointer-events: none;
         }
 
-        /* 4. NAVIGATION */
+        /* 3. NAVIGATION - Giữ phong cách liquid-glass */
         nav {
             position: relative;
-            z-index: 10;
+            z-index: 50;
             max-width: 1280px;
             margin: 0 auto;
             padding: 1.5rem 2rem;
@@ -86,54 +85,21 @@
             letter-spacing: -0.02em;
         }
 
-        .logo sup {
-            font-size: 0.75rem;
-            margin-left: 2px;
-        }
+        .nav-links { display: none; }
+        @media (min-width: 768px) { .nav-links { display: flex; gap: 2.5rem; } }
 
-        .nav-links {
-            display: none;
-        }
-
-        @media (min-width: 768px) {
-            .nav-links {
-                display: flex;
-                gap: 2.5rem;
-            }
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            font-size: 0.875rem;
-            color: var(--muted-foreground);
-            transition: color 0.3s ease;
-            
-            /* TỐI ƯU UX/UI: Tăng vùng chạm tối thiểu cho ngón tay trên mobile */
-            min-height: 44px;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .nav-links a.active {
-            color: var(--foreground);
-        }
-
-        /* 5. LIQUID GLASS EFFECT (Kỹ thuật cao cấp) */
         .liquid-glass {
             background: var(--liquid-bg);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border: none;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             position: relative;
             cursor: pointer;
             color: var(--foreground);
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: inline-flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            
-            /* TỐI ƯU UX/UI: Đảm bảo nút đủ lớn để chạm dễ dàng */
             min-height: 44px;
         }
 
@@ -143,34 +109,15 @@
             inset: 0;
             border-radius: inherit;
             padding: 1.4px;
-            background: linear-gradient(180deg, 
-                rgba(255,255,255,0.45) 0%, 
-                rgba(255,255,255,0.1) 40%, 
-                rgba(255,255,255,0.1) 60%, 
-                rgba(255,255,255,0.45) 100%);
+            background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask-composite: exclude;
             -webkit-mask-composite: xor;
-            pointer-events: none;
         }
 
-        .btn-nav {
-            padding: 0.6rem 1.5rem;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-        }
+        .btn-nav { padding: 0.6rem 1.5rem; border-radius: 9999px; font-size: 0.875rem; }
 
-        /* TỐI ƯU UX/UI: Chống lỗi "Sticky Hover" (nút bị kẹt màu khi chạm tay trên điện thoại) */
-        @media (hover: hover) {
-            .nav-links a:hover {
-                color: var(--foreground);
-            }
-            .liquid-glass:hover {
-                transform: scale(1.03);
-            }
-        }
-
-        /* 6. HERO SECTION */
+        /* 4. HERO SECTION */
         .hero {
             position: relative;
             z-index: 10;
@@ -179,7 +126,6 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            /* Đã thay đổi padding để chữ được căn giữa hoàn hảo khi loại bỏ nút Begin Journey */
             padding: 4rem 1.5rem;
             min-height: calc(100vh - 100px);
         }
@@ -190,43 +136,66 @@
             line-height: 0.95;
             letter-spacing: -2.46px;
             font-weight: 400;
-            max-width: 1200px;
         }
 
-        /* CSS MỚI: Điều chỉnh màu chữ và hiệu ứng phát sáng vàng */
         h1 em {
             font-style: normal;
-            color: white; /* Đổi màu chữ sang trắng */
-            /* Tạo hiệu ứng phát sáng vàng (Gold glow) bằng nhiều lớp text-shadow */
-            text-shadow: 
-                0 0 10px rgba(255, 215, 0, 0.7), /* Lớp sáng vàng gần */
-                0 0 20px rgba(255, 215, 0, 0.5), /* Lớp sáng vàng xa hơn chút */
-                0 0 30px rgba(255, 215, 0, 0.3); /* Lớp sáng vàng lan tỏa mờ */
+            color: white;
+            text-shadow: 0 0 10px var(--gold-glow), 0 0 25px rgba(255, 215, 0, 0.3);
         }
 
-        /* 7. ANIMATIONS */
-        @keyframes fadeRise {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* 5. ĐOM ĐÓM (FIREFLIES) - Tối ưu hiệu ứng phát sáng mờ viền */
+        .bubbles-container {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            pointer-events: none;
         }
 
-        .animate-1 { animation: fadeRise 0.8s ease-out forwards; }
-        .animate-3 { animation: fadeRise 0.8s ease-out 0.4s both; }
-
-        /* TỐI ƯU UX/UI: Căn chỉnh lại nhẹ nhàng cho màn hình Mobile */
-        @media (max-width: 768px) {
-            h1 {
-                letter-spacing: -1px; /* Tránh chữ dính quá sát nhau trên màn hình nhỏ */
-            }
+        .firefly {
+            position: absolute;
+            border-radius: 50%;
+            /* Lõi sáng trắng và quầng vàng nhòe */
+            background: radial-gradient(circle at center, #fff 0%, var(--gold-glow) 50%, transparent 80%);
+            filter: blur(2px); 
+            box-shadow: 0 0 15px var(--gold-glow);
+            pointer-events: auto;
+            cursor: pointer;
+            will-change: transform, opacity;
         }
 
-        /* 8. HIỆU ỨNG TRƯỢT TỪ DƯỚI LÊN (MODAL) */
+        /* Vùng chạm ảo (UX) - Giúp người dùng dễ bấm trúng trên mobile */
+        .firefly::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: transparent;
+        }
+
+        @keyframes fireflyFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+            50% { transform: translate(-10px, -20px) scale(1.1); opacity: 1; }
+        }
+
+        .f-1 { width: 15px; height: 15px; top: 15%; left: 15%; animation: fireflyFloat 6s infinite ease-in-out; }
+        .f-2 { width: 22px; height: 22px; top: 65%; left: 25%; animation: fireflyFloat 8s infinite ease-in-out 1s; }
+        .f-3 { width: 12px; height: 12px; top: 30%; left: 75%; animation: fireflyFloat 7s infinite ease-in-out 2s; }
+        .f-4 { width: 18px; height: 18px; top: 75%; left: 80%; animation: fireflyFloat 9s infinite ease-in-out 0.5s; }
+        .f-5 { width: 14px; height: 14px; top: 50%; left: 10%; animation: fireflyFloat 5s infinite ease-in-out 1.5s; }
+
+        .firefly.popped { transform: scale(0); opacity: 0; transition: 0.4s; }
+
+        /* 6. MODAL - Tinh chỉnh nảy và khung nổi bật */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(0, 10, 20, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 100;
             display: flex;
             align-items: center;
@@ -236,36 +205,36 @@
             transition: opacity 0.4s ease;
         }
 
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .modal-box {
-            background: rgba(20, 20, 20, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 24px; /* Bo tròn ở các góc */
+            background: rgba(10, 30, 50, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
             padding: 3.5rem 2.5rem;
-            max-width: 500px;
+            max-width: 450px;
             width: 90%;
             text-align: center;
-            transform: translateY(100vh); /* Đẩy xuống dưới cùng màn hình lúc ban đầu */
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: scale(0.9) translateY(40px);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* Elastic effect */
             position: relative;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
 
-        .modal-overlay.active .modal-box {
-            transform: translateY(0); /* Trượt lên vị trí trung tâm */
+        .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+
+        /* Khung nổi bật khi nhấn đom đóm */
+        .modal-overlay.highlight .modal-box {
+            border: 1.5px solid var(--gold-glow);
+            box-shadow: 0 0 30px var(--gold-glow), 0 30px 60px rgba(0,0,0,0.5);
         }
 
         .modal-title {
             font-family: var(--font-display);
             font-size: 3.5rem;
             line-height: 1.1;
-            margin-bottom: 1rem;
-            color: var(--foreground);
-            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            color: #fff;
         }
 
         .modal-subtext {
@@ -276,115 +245,45 @@
 
         .close-modal-btn {
             position: absolute;
-            top: 1.25rem;
+            top: 1.5rem;
             right: 1.5rem;
             background: transparent;
             border: none;
             color: var(--muted-foreground);
-            font-size: 2rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: color 0.3s ease;
-            line-height: 1;
+            transition: color 0.3s;
         }
 
-        @media (hover: hover) {
-            .close-modal-btn:hover {
-                color: var(--foreground);
-            }
+        /* ANIMATIONS REVEAL */
+        .animate-1 { animation: fadeRise 0.8s ease-out forwards; }
+        @keyframes fadeRise {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        /* 9. BONG BÓNG NƯỚC LƠ LỬNG */
-        .bubbles-container {
-            position: absolute;
-            inset: 0;
-            z-index: 15; /* Sửa từ 5 lên 15 để bong bóng nổi lên trên lớp Text (Hero z-index: 10) */
-            pointer-events: none; /* Để không che mất thao tác cuộn trang */
-            overflow: hidden;
-        }
-
-        .bubble {
-            position: absolute;
-            border-radius: 50%;
-            /* Tạo màu và độ trong suốt giống giọt nước/bong bóng */
-            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.05) 60%);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 
-                inset -5px -5px 15px rgba(255, 255, 255, 0.2), 
-                inset 5px 5px 15px rgba(255, 255, 255, 0.1), 
-                0 0 10px rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(2px);
-            -webkit-backdrop-filter: blur(2px);
-            pointer-events: auto; /* Cho phép bấm vào bóng */
-            cursor: pointer;
-            animation: floatBubble 6s ease-in-out infinite;
-            transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s;
-        }
-
-        @media (hover: hover) {
-            .bubble:hover {
-                transform: scale(1.05) !important;
-                box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-            }
-        }
-
-        /* Hiệu ứng nổ bóng */
-        .bubble.popped {
-            animation: popBubble 0.4s ease-out forwards;
-            pointer-events: none;
-        }
-
-        /* Vị trí và nhịp điệu riêng cho 5 quả bóng */
-        .bubble-1 { width: 70px; height: 70px; top: 15%; left: 15%; animation-delay: 0s; animation-duration: 5s; }
-        .bubble-2 { width: 100px; height: 100px; top: 65%; left: 25%; animation-delay: 1.5s; animation-duration: 7s; }
-        .bubble-3 { width: 50px; height: 50px; top: 30%; left: 75%; animation-delay: 2s; animation-duration: 6s; }
-        .bubble-4 { width: 85px; height: 85px; top: 75%; left: 80%; animation-delay: 0.5s; animation-duration: 8s; }
-        .bubble-5 { width: 60px; height: 60px; top: 50%; left: 10%; animation-delay: 3s; animation-duration: 5.5s; }
-
-        @keyframes floatBubble {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-25px) scale(1.02); } /* Bay lên xuống nhè nhẹ */
-        }
-
-        @keyframes popBubble {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.5); opacity: 0.5; }
-            100% { transform: scale(0); opacity: 0; }
-        }
-
     </style>
 </head>
 <body>
 
     <!-- Background Video -->
     <div class="video-container">
-        <!-- TỐI ƯU UX/UI: Bổ sung preload="metadata" để load nhanh và mượt hơn -->
         <video autoplay loop muted playsinline preload="metadata">
             <source src="265731_medium.mp4" type="video/mp4">
         </video>
     </div>
 
-    <!-- Bong bóng nước lơ lửng -->
+    <!-- Đom đóm lơ lửng -->
     <div class="bubbles-container">
-        <div class="bubble bubble-1" data-id="1"></div>
-        <div class="bubble bubble-2" data-id="2"></div>
-        <div class="bubble bubble-3" data-id="3"></div>
-        <div class="bubble bubble-4" data-id="4"></div>
-        <div class="bubble bubble-5" data-id="5"></div>
+        <div class="firefly f-1" data-id="1"></div>
+        <div class="firefly f-2" data-id="2"></div>
+        <div class="firefly f-3" data-id="3"></div>
+        <div class="firefly f-4" data-id="4"></div>
+        <div class="firefly f-5" data-id="5"></div>
     </div>
 
     <!-- Navigation -->
     <nav>
-        <div class="logo">LoveU<sup></sup></div>
-        
-        <div class="nav-links">
-            <a href="#" class="active"></a>
-            <a href="#"></a>
-            <a href="#"></a>
-            <a href="#"></a>
-            <a href="#"></a>
-        </div>
-
-        <!-- Thêm class .trigger-modal để JS nhận diện nút -->
+        <div class="logo">LoveU</div>
         <a href="#" class="liquid-glass btn-nav trigger-modal">Begin Journey</a>
     </nav>
 
@@ -394,90 +293,71 @@
             everything <em>happens</em> for <br>
             <em>a reason.</em>
         </h1>
-        <!-- Nút ở khu vực này đã được loại bỏ để làm nổi bật Typography -->
     </main>
 
-    <!-- Modal / Khung trượt từ dưới lên -->
+    <!-- Modal -->
     <div id="journey-modal" class="modal-overlay">
         <div class="modal-box">
-            <button id="close-modal" class="close-modal-btn">&times;</button>
+            <button id="close-modal" class="close-modal-btn">✕</button>
             <h2 class="modal-title">A New Chapter</h2>
-            <p class="modal-subtext">Every step you take leads you closer to where you are meant to be. Are you ready to discover the reason?</p>
+            <p class="modal-subtext">Every step you take leads you closer to where you are meant to be.</p>
         </div>
     </div>
 
-    <!-- Script điều khiển chức năng đóng/mở Modal -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const triggers = document.querySelectorAll('.trigger-modal');
             const modal = document.getElementById('journey-modal');
             const closeBtn = document.getElementById('close-modal');
-            
-            // Lấy các element chứa nội dung Text để dễ thay đổi
             const modalTitle = document.querySelector('.modal-title');
             const modalSubtext = document.querySelector('.modal-subtext');
+            const triggers = document.querySelectorAll('.trigger-modal');
+            
+            const originalTitle = "Em rất chào chị ạ";
+            const originalText = "Đây không phải là phần chính, chị chạm tay vào các đom đóm giúp em";
 
-            // Lưu nội dung mặc định của nút Begin Journey
-            const originalTitle = "Em rất chào chị";
-            const originalText = "Đây không phải là phần chính, chạm tay vào các bong bóng nổi để biết thêm chi tiết";
-
-            // Dữ liệu nội dung riêng biệt khi bấm vỡ từng quả bóng nước
-            const bubbleContents = {
-                "1": { title: "", text: "Matcha thơm phức, cho em làm quen nha =))))" },
-                "2": { title: "", text: "Cho em làm quen nha =)))))))" },
-                "3": { title: "", text: "Cho em làm quen nha =))))" },
-                "4": { title: "", text: "Cho em làm quen!!!" },
-                "5": { title: "", text: "Cho em làm quennnnnnnn" }
+            const messages = {
+                "1": { title: "", text: "Cho em làm quen nhaaa" },
+                "2": { title: "", text: "Cho em làm quen với chị nha =))))))) 💛" },
+                "3": { title: "", text: "Cho em xin làm quen ạ" },
+                "4": { title: "", text: "Cho em làm quen chị nha =)))))" },
+                "5": { title: "", text: "Em xin phép làm quen chị ạ!" }
             };
 
-            // Mở modal cho các nút "Begin Journey" thông thường
+            // Mở modal thông thường
             triggers.forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    e.preventDefault(); 
-                    // Trả lại text gốc khi nhấp nút Navigation
-                    modalTitle.innerHTML = originalTitle;
-                    modalSubtext.innerHTML = originalText;
+                    e.preventDefault();
+                    modalTitle.innerText = originalTitle;
+                    modalSubtext.innerText = originalText;
+                    modal.classList.remove('highlight');
                     modal.classList.add('active');
                 });
             });
 
-            // Xử lý sự kiện nhấp vỡ bong bóng nước
-            const bubbles = document.querySelectorAll('.bubble');
-            bubbles.forEach(bubble => {
-                bubble.addEventListener('click', () => {
-                    const id = bubble.getAttribute('data-id');
-                    const content = bubbleContents[id];
+            // Xử lý khi bấm đom đóm
+            document.querySelectorAll('.firefly').forEach(f => {
+                f.addEventListener('click', () => {
+                    const id = f.getAttribute('data-id');
+                    const content = messages[id];
 
-                    // Kích hoạt CSS Animation nổ bóng
-                    bubble.classList.add('popped');
-
-                    // Thay đổi nội dung Modal tương ứng với bóng
-                    modalTitle.innerHTML = content.title;
-                    modalSubtext.innerHTML = content.text;
-
-                    // Chờ bóng nổ xong (tầm 300ms) thì bật Modal lên
+                    f.classList.add('popped');
+                    
+                    modalTitle.innerText = content.title;
+                    modalSubtext.innerText = content.text;
+                    modal.classList.add('highlight'); // Kích hoạt viền vàng phát sáng
+                    
                     setTimeout(() => {
                         modal.classList.add('active');
-                    }, 300);
+                    }, 200);
 
-                    // UX Thú vị: Cho bong bóng tự phục hồi (hiện lại) sau 10 giây
-                    setTimeout(() => {
-                        bubble.classList.remove('popped');
-                    }, 10000);
+                    // Hồi phục đom đóm sau 8s
+                    setTimeout(() => f.classList.remove('popped'), 8000);
                 });
             });
 
-            // Đóng modal khi bấm vào nút "X"
-            closeBtn.addEventListener('click', () => {
-                modal.classList.remove('active');
-            });
-
-            // Đóng modal khi bấm ra ngoài khung (bấm vào vùng nền đen mờ)
-            modal.addEventListener('click', (e) => {
-                if(e.target === modal) {
-                    modal.classList.remove('active');
-                }
-            });
+            const closeModal = () => modal.classList.remove('active');
+            closeBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
         });
     </script>
 </body>
