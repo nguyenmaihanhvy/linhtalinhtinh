@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
-        /* 1. CSS VARIABLES - Giữ nguyên hệ màu Navy Blue của bạn */
+        /* 1. CSS VARIABLES */
         :root {
             --background: #002b42; 
             --foreground: #ffffff;
@@ -18,9 +18,9 @@
             --font-body: 'Inter', sans-serif;
             --liquid-bg: rgba(255, 255, 255, 0.01);
             --gold-glow: rgba(255, 215, 0, 0.6);
+            --gold-solid: #ffd700;
         }
 
-        /* TỐI ƯU UX: Chống rung lắc trên mobile */
         html, body {
             overflow-x: hidden;
             -webkit-text-size-adjust: 100%;
@@ -42,7 +42,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 2. VIDEO BACKGROUND - Giữ nguyên lớp phủ 0.2 */
+        /* 2. VIDEO BACKGROUND */
         .video-container {
             position: absolute;
             inset: 0;
@@ -67,7 +67,7 @@
             pointer-events: none;
         }
 
-        /* 3. NAVIGATION - Giữ phong cách liquid-glass */
+        /* 3. NAVIGATION */
         nav {
             position: relative;
             z-index: 50;
@@ -144,7 +144,7 @@
             text-shadow: 0 0 10px var(--gold-glow), 0 0 25px rgba(255, 215, 0, 0.3);
         }
 
-        /* 5. ĐOM ĐÓM (FIREFLIES) - Tối ưu hiệu ứng phát sáng mờ viền */
+        /* 5. FIREFLIES */
         .bubbles-container {
             position: absolute;
             inset: 0;
@@ -155,7 +155,6 @@
         .firefly {
             position: absolute;
             border-radius: 50%;
-            /* Lõi sáng trắng và quầng vàng nhòe */
             background: radial-gradient(circle at center, #fff 0%, var(--gold-glow) 50%, transparent 80%);
             filter: blur(2px); 
             box-shadow: 0 0 15px var(--gold-glow);
@@ -164,7 +163,6 @@
             will-change: transform, opacity;
         }
 
-        /* Vùng chạm ảo (UX) - Giúp người dùng dễ bấm trúng trên mobile */
         .firefly::after {
             content: '';
             position: absolute;
@@ -189,7 +187,7 @@
 
         .firefly.popped { transform: scale(0); opacity: 0; transition: 0.4s; }
 
-        /* 6. MODAL - Tinh chỉnh nảy và khung nổi bật */
+        /* 6. MODAL & CHOICES */
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -216,14 +214,14 @@
             width: 90%;
             text-align: center;
             transform: scale(0.9) translateY(40px);
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); /* Elastic effect */
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
             box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
         }
 
         .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
 
-        /* Khung nổi bật khi nhấn đom đóm */
         .modal-overlay.highlight .modal-box {
             border: 1.5px solid var(--gold-glow);
             box-shadow: 0 0 30px var(--gold-glow), 0 30px 60px rgba(0,0,0,0.5);
@@ -233,7 +231,7 @@
             font-family: var(--font-display);
             font-size: 3.5rem;
             line-height: 1.1;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             color: #fff;
         }
 
@@ -241,6 +239,73 @@
             font-size: 1.125rem;
             color: var(--muted-foreground);
             line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        /* Choice Buttons */
+        .choice-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-choice {
+            padding: 0.8rem 2rem;
+            border-radius: 100px;
+            border: none;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .btn-yes {
+            background: var(--gold-solid);
+            color: #002b42;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-no {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-choice:hover {
+            transform: translateY(-3px);
+            filter: brightness(1.1);
+        }
+
+        /* Falling & Breaking Animation */
+        @keyframes fallAndBreak {
+            0% { transform: translateY(0) rotate(0); opacity: 1; }
+            100% { transform: translateY(400px) rotate(45deg); opacity: 0; }
+        }
+
+        .falling {
+            animation: fallAndBreak 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+            pointer-events: none;
+        }
+
+        .follow-up-box {
+            display: none;
+            background: var(--gold-glow);
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            margin-top: 1rem;
+            animation: fadeIn 0.5s ease-out forwards;
+            border: 1px dashed rgba(255,255,255,0.4);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .close-modal-btn {
@@ -255,7 +320,6 @@
             transition: color 0.3s;
         }
 
-        /* ANIMATIONS REVEAL */
         .animate-1 { animation: fadeRise 0.8s ease-out forwards; }
         @keyframes fadeRise {
             from { opacity: 0; transform: translateY(20px); }
@@ -265,14 +329,12 @@
 </head>
 <body>
 
-    <!-- Background Video -->
     <div class="video-container">
         <video autoplay loop muted playsinline preload="metadata">
             <source src="265731_medium.mp4" type="video/mp4">
         </video>
     </div>
 
-    <!-- Đom đóm lơ lửng -->
     <div class="bubbles-container">
         <div class="firefly f-1" data-id="1"></div>
         <div class="firefly f-2" data-id="2"></div>
@@ -281,13 +343,11 @@
         <div class="firefly f-5" data-id="5"></div>
     </div>
 
-    <!-- Navigation -->
     <nav>
         <div class="logo">LoveU</div>
         <a href="#" class="liquid-glass btn-nav trigger-modal">Begin Journey</a>
     </nav>
 
-    <!-- Hero Section -->
     <main class="hero">
         <h1 class="animate-1">
             everything <em>happens</em> for <br>
@@ -295,12 +355,20 @@
         </h1>
     </main>
 
-    <!-- Modal -->
     <div id="journey-modal" class="modal-overlay">
         <div class="modal-box">
             <button id="close-modal" class="close-modal-btn">✕</button>
             <h2 class="modal-title">A New Chapter</h2>
             <p class="modal-subtext">Every step you take leads you closer to where you are meant to be.</p>
+            
+            <div id="choice-area" class="choice-container" style="display: none;">
+                <button class="btn-choice btn-yes" id="choice-yes">Ok em</button>
+                <button class="btn-choice btn-no" id="choice-no">Không</button>
+            </div>
+            
+            <div id="follow-up" class="follow-up-box">
+                Chị định chọn không thật ạ? 🥺
+            </div>
         </div>
     </div>
 
@@ -312,21 +380,34 @@
             const modalSubtext = document.querySelector('.modal-subtext');
             const triggers = document.querySelectorAll('.trigger-modal');
             
-            const originalTitle = "Em rất chào chị ạ";
-            const originalText = "Đây không phải là phần chính, chị chạm tay vào các đom đóm giúp em";
+            const choiceArea = document.getElementById('choice-area');
+            const btnNo = document.getElementById('choice-no');
+            const btnYes = document.getElementById('choice-yes');
+            const followUp = document.getElementById('follow-up');
+            
+            const originalTitle = "Chào chị nhé";
+            const originalText = "Đây không phải là phần chính, chạm tay vào các đom đóm để biết thêm chi tiết.";
 
             const messages = {
-                "1": { title: "", text: "Cho em làm quen nhaaa" },
-                "2": { title: "", text: "Cho em làm quen với chị nha =))))))) 💛" },
-                "3": { title: "", text: "Cho em xin làm quen ạ" },
-                "4": { title: "", text: "Cho em làm quen chị nha =)))))" },
-                "5": { title: "", text: "Em xin phép làm quen chị ạ!" }
+                "1": { title: "Cho em làm quen với chị được không ạ", text: "" },
+                "2": { title: "Em có thể làm quen với chị được không =)))))", text: "" },
+                "3": { title: "Chị làm quen với em được không =)))))", text: "" },
+                "4": { title: "Em nghĩ hoài vẫn không bắt chuyện được, nay đẹp trời chị cho em làm quen được không =))))", text: "" },
+                "5": { title: "Cho em làm quen nhaaaa", text: "" }
             };
 
-            // Mở modal thông thường
+            const resetChoices = () => {
+                choiceArea.style.display = 'none';
+                followUp.style.display = 'none';
+                btnNo.classList.remove('falling');
+                btnNo.style.display = 'inline-block';
+            };
+
+            // Mở modal thông thường (Begin Journey)
             triggers.forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
+                    resetChoices();
                     modalTitle.innerText = originalTitle;
                     modalSubtext.innerText = originalText;
                     modal.classList.remove('highlight');
@@ -342,17 +423,34 @@
 
                     f.classList.add('popped');
                     
+                    resetChoices();
                     modalTitle.innerText = content.title;
                     modalSubtext.innerText = content.text;
-                    modal.classList.add('highlight'); // Kích hoạt viền vàng phát sáng
+                    choiceArea.style.display = 'flex'; // Hiện nút lựa chọn
+                    modal.classList.add('highlight');
                     
                     setTimeout(() => {
                         modal.classList.add('active');
                     }, 200);
 
-                    // Hồi phục đom đóm sau 8s
                     setTimeout(() => f.classList.remove('popped'), 8000);
                 });
+            });
+
+            // Logic cho nút "Không"
+            btnNo.addEventListener('click', () => {
+                btnNo.classList.add('falling');
+                setTimeout(() => {
+                    btnNo.style.display = 'none';
+                    followUp.style.display = 'block';
+                }, 600); // Đợi rơi gần hết mới hiện text mới
+            });
+
+            // Logic cho nút "Ok em"
+            btnYes.addEventListener('click', () => {
+                modalTitle.innerText = "Tuyệt vời!";
+                modalSubtext.innerText = "Thật không để em còn đi khoe =)))";
+                choiceArea.style.display = 'none';
             });
 
             const closeModal = () => modal.classList.remove('active');
