@@ -293,6 +293,64 @@
             }
         }
 
+        /* 9. BONG BÓNG NƯỚC LƠ LỬNG */
+        .bubbles-container {
+            position: absolute;
+            inset: 0;
+            z-index: 15; /* Sửa từ 5 lên 15 để bong bóng nổi lên trên lớp Text (Hero z-index: 10) */
+            pointer-events: none; /* Để không che mất thao tác cuộn trang */
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            /* Tạo màu và độ trong suốt giống giọt nước/bong bóng */
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.05) 60%);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                inset -5px -5px 15px rgba(255, 255, 255, 0.2), 
+                inset 5px 5px 15px rgba(255, 255, 255, 0.1), 
+                0 0 10px rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            pointer-events: auto; /* Cho phép bấm vào bóng */
+            cursor: pointer;
+            animation: floatBubble 6s ease-in-out infinite;
+            transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s;
+        }
+
+        @media (hover: hover) {
+            .bubble:hover {
+                transform: scale(1.05) !important;
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        /* Hiệu ứng nổ bóng */
+        .bubble.popped {
+            animation: popBubble 0.4s ease-out forwards;
+            pointer-events: none;
+        }
+
+        /* Vị trí và nhịp điệu riêng cho 5 quả bóng */
+        .bubble-1 { width: 70px; height: 70px; top: 15%; left: 15%; animation-delay: 0s; animation-duration: 5s; }
+        .bubble-2 { width: 100px; height: 100px; top: 65%; left: 25%; animation-delay: 1.5s; animation-duration: 7s; }
+        .bubble-3 { width: 50px; height: 50px; top: 30%; left: 75%; animation-delay: 2s; animation-duration: 6s; }
+        .bubble-4 { width: 85px; height: 85px; top: 75%; left: 80%; animation-delay: 0.5s; animation-duration: 8s; }
+        .bubble-5 { width: 60px; height: 60px; top: 50%; left: 10%; animation-delay: 3s; animation-duration: 5.5s; }
+
+        @keyframes floatBubble {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-25px) scale(1.02); } /* Bay lên xuống nhè nhẹ */
+        }
+
+        @keyframes popBubble {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
     </style>
 </head>
 <body>
@@ -303,6 +361,15 @@
         <video autoplay loop muted playsinline preload="metadata">
             <source src="265731_medium.mp4" type="video/mp4">
         </video>
+    </div>
+
+    <!-- Bong bóng nước lơ lửng -->
+    <div class="bubbles-container">
+        <div class="bubble bubble-1" data-id="1"></div>
+        <div class="bubble bubble-2" data-id="2"></div>
+        <div class="bubble bubble-3" data-id="3"></div>
+        <div class="bubble bubble-4" data-id="4"></div>
+        <div class="bubble bubble-5" data-id="5"></div>
     </div>
 
     <!-- Navigation -->
@@ -334,8 +401,8 @@
     <div id="journey-modal" class="modal-overlay">
         <div class="modal-box">
             <button id="close-modal" class="close-modal-btn">&times;</button>
-            <h2 class="modal-title">Em rất chào chị</h2>
-            <p class="modal-subtext">Mỗi một lần chạm sẽ khiến em đỡ đau đầu hơn =)))) Nhờ chị chạm vài lần giúp em nhen</p>
+            <h2 class="modal-title">A New Chapter</h2>
+            <p class="modal-subtext">Every step you take leads you closer to where you are meant to be. Are you ready to discover the reason?</p>
         </div>
     </div>
 
@@ -345,12 +412,58 @@
             const triggers = document.querySelectorAll('.trigger-modal');
             const modal = document.getElementById('journey-modal');
             const closeBtn = document.getElementById('close-modal');
+            
+            // Lấy các element chứa nội dung Text để dễ thay đổi
+            const modalTitle = document.querySelector('.modal-title');
+            const modalSubtext = document.querySelector('.modal-subtext');
 
-            // Mở modal khi bấm vào bất kỳ nút "Begin Journey" nào
+            // Lưu nội dung mặc định của nút Begin Journey
+            const originalTitle = "Em rất chào chị";
+            const originalText = "Đây không phải là phần chính, chạm tay vào các bong bóng nổi để biết thêm chi tiết";
+
+            // Dữ liệu nội dung riêng biệt khi bấm vỡ từng quả bóng nước
+            const bubbleContents = {
+                "1": { title: "", text: "Matcha thơm phức, cho em làm quen nha =))))" },
+                "2": { title: "", text: "Cho em làm quen nha =)))))))" },
+                "3": { title: "", text: "Cho em làm quen nha =))))" },
+                "4": { title: "", text: "Cho em làm quen!!!" },
+                "5": { title: "", text: "Cho em làm quennnnnnnn" }
+            };
+
+            // Mở modal cho các nút "Begin Journey" thông thường
             triggers.forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    e.preventDefault(); // Ngăn trang web nhảy lên đầu trang
+                    e.preventDefault(); 
+                    // Trả lại text gốc khi nhấp nút Navigation
+                    modalTitle.innerHTML = originalTitle;
+                    modalSubtext.innerHTML = originalText;
                     modal.classList.add('active');
+                });
+            });
+
+            // Xử lý sự kiện nhấp vỡ bong bóng nước
+            const bubbles = document.querySelectorAll('.bubble');
+            bubbles.forEach(bubble => {
+                bubble.addEventListener('click', () => {
+                    const id = bubble.getAttribute('data-id');
+                    const content = bubbleContents[id];
+
+                    // Kích hoạt CSS Animation nổ bóng
+                    bubble.classList.add('popped');
+
+                    // Thay đổi nội dung Modal tương ứng với bóng
+                    modalTitle.innerHTML = content.title;
+                    modalSubtext.innerHTML = content.text;
+
+                    // Chờ bóng nổ xong (tầm 300ms) thì bật Modal lên
+                    setTimeout(() => {
+                        modal.classList.add('active');
+                    }, 300);
+
+                    // UX Thú vị: Cho bong bóng tự phục hồi (hiện lại) sau 10 giây
+                    setTimeout(() => {
+                        bubble.classList.remove('popped');
+                    }, 10000);
                 });
             });
 
