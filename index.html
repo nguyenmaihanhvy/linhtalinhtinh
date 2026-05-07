@@ -423,7 +423,7 @@
                         <img src="Đồng chí Lâm không có giỡn nha!!! (2).png" alt="bubble">
                         <p>Chị định chọn không thật à? 🥺</p>
                     </div>
-                    <img id="main-sticker" src="Đồng chí Lâm không có giỡn nha!!!.jpg" alt="sticker">
+                    <img id="main-sticker" src="Đồng chí Lâm không có giỡn nha!!!.png" alt="sticker">
                 </div>
 
                 <!-- Buttons Choice -->
@@ -465,7 +465,7 @@
             const resetState = () => {
                 choiceArea.style.display = 'none';
                 speechBubble.style.display = 'none';
-                mainSticker.src = "Đồng chí Lâm không có giỡn nha!!!.jpg";
+                mainSticker.src = "Đồng chí Lâm không có giỡn nha!!!.png";
                 stickerContainer.classList.remove('sad-sticker');
                 stickerContainer.classList.add('sticker-wiggle');
                 btnNo.style.display = 'inline-block';
@@ -504,7 +504,7 @@
 
             // Logic khi chọn KHÔNG
             btnNo.addEventListener('click', () => {
-                mainSticker.src = "Đồng chí Lâm không có giỡn nha!!! (1).jpg";
+                mainSticker.src = "Đồng chí Lâm không có giỡn nha!!! (1).png";
                 stickerContainer.classList.remove('sticker-wiggle');
                 stickerContainer.classList.add('sad-sticker');
                 speechBubble.style.display = 'block';
