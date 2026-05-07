@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HanhVy | linhtalinhtinh</title>
     
-    <!-- Google Fonts hỗ trợ Tiếng Việt đầy đủ để tránh lỗi font -->
+    <!-- Google Fonts hỗ trợ Tiếng Việt đầy đủ -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <style>
@@ -204,13 +204,13 @@
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .modal-box {
-            background: rgba(10, 30, 50, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(10, 30, 50, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 35px;
             padding: 3.5rem 2rem;
             max-width: 500px;
             width: 92%;
-            text-align: center; /* QUAY LẠI CĂN GIỮA */
+            text-align: center;
             transform: scale(0.95) translateY(30px);
             transition: all 0.5s var(--easing-elastic);
             position: relative;
@@ -236,33 +236,41 @@
             font-size: 1.1rem;
             color: var(--muted-foreground);
             line-height: 1.5;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
             font-weight: 300;
         }
 
-        /* Interactive Area: Sticker + Buttons */
+        /* Tối ưu khu vực nút: Nhóm Sticker + Nút Ok em */
         .interactive-area {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
             position: relative;
-            flex-wrap: wrap;
         }
 
-        /* Sticker Wrapper */
-        .sticker-box {
+        .yes-group {
             position: relative;
-            width: 110px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Sticker lồng vào nút */
+        .sticker-box {
+            position: absolute;
+            left: -45px;
+            top: -15px;
+            width: 75px;
             height: auto;
-            flex-shrink: 0;
+            z-index: 10;
+            pointer-events: none; /* Tránh cản trở việc click nút */
             transition: all 0.4s var(--easing);
         }
 
         .sticker-box img {
             width: 100%;
             height: auto;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.4));
         }
 
         .sticker-wiggle {
@@ -270,13 +278,13 @@
         }
 
         @keyframes stickerIdle {
-            0%, 100% { transform: translateY(0) rotate(-3deg); }
-            50% { transform: translateY(-10px) rotate(3deg); }
+            0%, 100% { transform: translateY(0) rotate(-4deg); }
+            50% { transform: translateY(-8px) rotate(4deg); }
         }
 
-        /* Sad State */
+        /* Trạng thái Sad của sticker */
         .sad-sticker img {
-            filter: grayscale(0.8) brightness(0.9) contrast(1.1) !important;
+            filter: grayscale(0.8) brightness(0.85) contrast(1.1) drop-shadow(0 0 10px rgba(0,0,0,0.5)) !important;
             animation: tremble 0.2s infinite;
         }
 
@@ -286,15 +294,15 @@
             75% { transform: translateX(1.5px); }
         }
 
-        /* Speech Bubble */
+        /* Bóng thoại xuất hiện ngay trên sticker */
         .speech-bubble {
             position: absolute;
-            bottom: 110%;
+            bottom: 120%;
             left: 50%;
             transform: translateX(-50%);
-            width: 200px;
+            width: 180px;
             display: none;
-            z-index: 10;
+            z-index: 20;
             animation: bubblePop 0.5s var(--easing-elastic) forwards;
         }
 
@@ -304,15 +312,15 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4));
+            filter: drop-shadow(0 8px 15px rgba(0,0,0,0.4));
         }
 
         .speech-bubble p {
             position: relative;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #333;
-            font-weight: 600;
-            padding: 15px 10px 25px 10px;
+            font-weight: 700;
+            padding: 12px 10px 22px 10px;
             text-align: center;
         }
 
@@ -321,20 +329,14 @@
             100% { transform: translateX(-50%) scale(1) translateY(0); opacity: 1; }
         }
 
-        /* Buttons Choice */
-        .choice-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
+        /* Buttons Styling */
         .btn-choice {
-            padding: 0.8rem 2rem;
+            padding: 0.85rem 2.5rem;
             border-radius: 100px;
             border: none;
             font-family: var(--font-body);
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s var(--easing);
             white-space: nowrap;
@@ -343,7 +345,8 @@
         .btn-yes {
             background: var(--gold-solid);
             color: #002b42;
-            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.2);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.25);
+            padding-left: 3rem; /* Để hở chỗ cho sticker */
         }
 
         .btn-no {
@@ -352,9 +355,14 @@
             border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        .btn-choice:hover {
-            transform: translateY(-4px);
-            filter: brightness(1.1);
+        @media (hover: hover) {
+            .btn-choice:hover {
+                transform: translateY(-4px);
+                filter: brightness(1.1);
+            }
+            .btn-yes:hover {
+                box-shadow: 0 15px 30px rgba(255, 215, 0, 0.4);
+            }
         }
 
         .close-modal-btn {
@@ -417,20 +425,20 @@
             <p class="modal-subtext">Mỗi bước chân bạn đi đều dẫn bạn đến gần hơn với nơi bạn thuộc về.</p>
             
             <div id="choice-area" class="interactive-area" style="display: none;">
-                <!-- Sticker & Bubble Container -->
-                <div id="sticker-container" class="sticker-box sticker-wiggle">
-                    <div id="speech-bubble" class="speech-bubble">
-                        <img src="Đồng chí Lâm không có giỡn nha!!! (2).png" alt="bubble">
-                        <p>Chị định chọn không thật à? 🥺</p>
+                <!-- Nhóm nút đồng ý: Sticker + Ok em -->
+                <div class="yes-group">
+                    <div id="sticker-container" class="sticker-box sticker-wiggle">
+                        <div id="speech-bubble" class="speech-bubble">
+                            <img src="Đồng chí Lâm không có giỡn nha!!! (2).png" alt="bubble">
+                            <p>Chị định chọn không thật à? 🥺</p>
+                        </div>
+                        <img id="main-sticker" src="Đồng chí Lâm không có giỡn nha!!!.png" alt="sticker">
                     </div>
-                    <img id="main-sticker" src="Đồng chí Lâm không có giỡn nha!!!.png" alt="sticker">
+                    <button class="btn-choice btn-yes" id="choice-yes">Ok em</button>
                 </div>
 
-                <!-- Buttons Choice -->
-                <div class="choice-buttons">
-                    <button class="btn-choice btn-yes" id="choice-yes">Ok em</button>
-                    <button class="btn-choice btn-no" id="choice-no">Không</button>
-                </div>
+                <!-- Nút từ chối -->
+                <button class="btn-choice btn-no" id="choice-no">Không</button>
             </div>
         </div>
     </div>
