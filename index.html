@@ -373,14 +373,14 @@
     <!-- Thay mp4 của bạn vào src, mình thêm poster mờ để lót nền -->
     <div class="video-container">
         <video autoplay loop muted playsinline preload="metadata" poster="https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2094&auto=format&fit=crop">
-            <source src="0505.mp4" type="video/mp4">
+            <source src="0505.mov" type="video/mov">
         </video>
     </div>
 
     <!-- Audio ngầm định (Nhạc Lofi nhẹ nhàng) -->
     <!-- Bạn có thể thay link nhạc mp3 khác vào src -->
     <audio id="bg-music" loop preload="auto">
-        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+        <source src="noname.mp3" type="audio/mpeg">
     </audio>
 
     <div class="bubbles-container">
@@ -392,7 +392,7 @@
     </div>
 
     <nav>
-        <div class="logo">LoveU</div>
+        <div class="logo">NguyenMaiHanhVy</div>
         <a href="#" class="liquid-glass btn-nav trigger-modal">Begin Journey</a>
     </nav>
 
@@ -539,7 +539,7 @@
                 followUp.style.display = 'none';
                 choiceArea.style.display = 'none';
                 
-                modalTitle.innerText = "Tuyệt vời! 🎉";
+                modalTitle.innerText = "";
                 
                 // Ở ĐÂY: Thêm Sticker Lay EXO và lời nhắn
                 modalSubtext.innerHTML = `
