@@ -5,26 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HanhVy | linhtalinhtinh</title>
     
-    <!-- Google Fonts hỗ trợ Tiếng Việt đầy đủ -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Be+Vietnam+Pro:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Google Fonts - Đã tối ưu subset Vietnamese để không lỗi font -->
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap&subset=vietnamese" rel="stylesheet">
     
     <style>
         /* 1. CSS VARIABLES */
         :root {
             --background: #002b42; 
             --foreground: #ffffff;
-            --muted-foreground: rgba(255, 255, 255, 0.7);
-            --font-display: 'Playfair Display', serif;
-            --font-body: 'Be Vietnam Pro', sans-serif;
+            --muted-foreground: #a1a1aa;
+            --font-display: 'Instrument Serif', serif;
+            --font-body: 'Inter', sans-serif;
             --liquid-bg: rgba(255, 255, 255, 0.01);
             --gold-glow: rgba(255, 215, 0, 0.6);
             --gold-solid: #ffd700;
             --easing: cubic-bezier(0.23, 1, 0.32, 1);
-            --easing-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         html, body {
-            overflow: hidden;
+            overflow-x: hidden;
             -webkit-text-size-adjust: 100%;
             touch-action: manipulation;
             height: 100%;
@@ -35,7 +34,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            -webkit-tap-highlight-color: transparent; /* Tối ưu UX Mobile: bỏ highlight xanh khi chạm */
         }
 
         body {
@@ -49,6 +48,8 @@
         .video-container {
             position: absolute;
             inset: 0;
+            width: 100%;
+            height: 100%;
             z-index: 0;
             overflow: hidden;
         }
@@ -57,6 +58,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            will-change: transform; /* Tối ưu GPU */
         }
 
         .video-container::after {
@@ -65,6 +67,7 @@
             inset: 0;
             background: rgba(0, 0, 0, 0.2);
             z-index: 1;
+            pointer-events: none;
         }
 
         /* 3. NAVIGATION */
@@ -85,6 +88,9 @@
             letter-spacing: -0.02em;
         }
 
+        .nav-links { display: none; }
+        @media (min-width: 768px) { .nav-links { display: flex; gap: 2.5rem; } }
+
         .liquid-glass {
             background: var(--liquid-bg);
             backdrop-filter: blur(8px);
@@ -92,7 +98,7 @@
             position: relative;
             cursor: pointer;
             color: var(--foreground);
-            transition: transform 0.4s var(--easing-elastic);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -112,7 +118,7 @@
             -webkit-mask-composite: xor;
         }
 
-        .btn-nav { padding: 0.6rem 1.5rem; border-radius: 9999px; font-size: 0.875rem; font-weight: 500; }
+        .btn-nav { padding: 0.6rem 1.5rem; border-radius: 9999px; font-size: 0.875rem; }
 
         /* 4. HERO SECTION */
         .hero {
@@ -124,7 +130,7 @@
             justify-content: center;
             text-align: center;
             padding: 4rem 1.5rem;
-            height: 100vh;
+            min-height: calc(100vh - 100px);
         }
 
         h1 {
@@ -136,12 +142,12 @@
         }
 
         h1 em {
-            font-style: italic;
+            font-style: normal;
             color: white;
             text-shadow: 0 0 10px var(--gold-glow), 0 0 25px rgba(255, 215, 0, 0.3);
         }
 
-        /* 5. FIREFLIES */
+        /* 5. FIREFLIES - Tối ưu hiệu năng & Hit Area cho Mobile */
         .bubbles-container {
             position: absolute;
             inset: 0;
@@ -153,11 +159,23 @@
             position: absolute;
             border-radius: 50%;
             background: radial-gradient(circle at center, #fff 0%, var(--gold-glow) 50%, transparent 80%);
-            filter: blur(1.5px); 
+            filter: blur(2px); 
             box-shadow: 0 0 15px var(--gold-glow);
             pointer-events: auto;
             cursor: pointer;
             will-change: transform, opacity;
+        }
+
+        /* Hit area vô hình giúp chạm dễ hơn trên điện thoại */
+        .firefly::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: transparent;
         }
 
         @keyframes fireflyFloat {
@@ -173,14 +191,14 @@
 
         .firefly.popped { transform: scale(0); opacity: 0; transition: 0.4s var(--easing); }
 
-        /* 6. MODAL & INTERACTION */
+        /* 6. MODAL & CHOICES */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 8, 20, 0.85);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            z-index: 1000;
+            background: rgba(0, 10, 20, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -192,226 +210,124 @@
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
         .modal-box {
-            background: rgba(10, 30, 50, 0.95);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 35px;
-            padding: 3rem 2rem;
-            max-width: 500px;
+            background: rgba(10, 30, 50, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 3.5rem 2.5rem;
+            max-width: 450px;
             width: 90%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            text-align: center;
+            transform: scale(0.95) translateY(40px);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             position: relative;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
-            transform: scale(0.95) translateY(30px);
-            transition: all 0.5s var(--easing-elastic);
-            min-height: 350px; /* Duy trì khung vững chãi */
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
         }
 
         .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
 
         .modal-overlay.highlight .modal-box {
             border: 1.5px solid var(--gold-glow);
-            box-shadow: 0 0 35px var(--gold-glow), 0 40px 100px rgba(0,0,0,0.8);
-        }
-
-        /* Container cho phần text */
-        .modal-content-wrapper {
-            width: 100%;
-            transition: all 0.4s var(--easing);
-            opacity: 1;
-            text-align: center;
+            box-shadow: 0 0 30px var(--gold-glow), 0 30px 60px rgba(0,0,0,0.5);
         }
 
         .modal-title {
             font-family: var(--font-display);
-            font-size: clamp(2.5rem, 8vw, 3.5rem);
+            font-size: 3.5rem;
             line-height: 1.1;
             margin-bottom: 1rem;
             color: #fff;
         }
 
         .modal-subtext {
-            font-size: 1.05rem;
+            font-size: 1.125rem;
             color: var(--muted-foreground);
-            line-height: 1.5;
+            line-height: 1.6;
             margin-bottom: 2rem;
-            font-weight: 300;
         }
 
-        /* Ẩn text khi ở trạng thái buồn */
-        .modal-box.is-sad .modal-content-wrapper {
-            opacity: 0;
-            visibility: hidden;
-            height: 0;
-            margin: 0;
-            padding: 0;
-            pointer-events: none;
-        }
-
-        /* Khu vực tương tác */
-        .interactive-area {
+        /* Choice Buttons */
+        .choice-container {
             display: flex;
-            align-items: center;
+            gap: 1rem;
             justify-content: center;
-            gap: 15px;
-            position: relative;
-            width: 100%;
-            margin-top: 10px;
-            flex: 1; /* Cho phép chiếm không gian còn lại */
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
         }
 
-        .yes-group {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Sticker Styling */
-        .sticker-box {
-            position: absolute;
-            left: -45px;
-            top: -10px;
-            width: 85px;
-            height: auto;
-            z-index: 10;
-            pointer-events: none;
-            transition: all 0.5s var(--easing-elastic);
-        }
-
-        /* Sad State: Tách rời sticker đưa sang trái */
-        .modal-box.is-sad .sticker-box {
-            left: 20px;
-            top: 55%;
-            transform: translateY(-50%) scale(1.4);
-            width: 120px;
-        }
-
-        .sticker-box img {
-            width: 100%;
-            height: auto;
-            filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
-        }
-
-        .sticker-wiggle {
-            animation: stickerIdle 4s infinite ease-in-out;
-        }
-
-        @keyframes stickerIdle {
-            0%, 100% { transform: translateY(0) rotate(-4deg); }
-            50% { transform: translateY(-10px) rotate(4deg); }
-        }
-
-        /* Sad State */
-        .sad-sticker img {
-            filter: grayscale(0.8) brightness(0.85) contrast(1.1) !important;
-            animation: tremble 0.2s infinite;
-        }
-
-        @keyframes tremble {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-1.5px); }
-            75% { transform: translateX(1.5px); }
-        }
-
-        /* Bóng thoại */
-        .speech-bubble {
-            position: absolute;
-            bottom: 110%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 200px;
-            display: none;
-            z-index: 20;
-            animation: bubblePop 0.5s var(--easing-elastic) forwards;
-        }
-
-        /* Sad State: Bóng thoại nằm trên sticker đã tách rời */
-        .modal-box.is-sad .speech-bubble {
-            bottom: 115%;
-        }
-
-        .speech-bubble img {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
-        }
-
-        .speech-bubble p {
-            position: relative;
-            font-size: 0.9rem;
-            color: #222;
-            font-weight: 700;
-            padding: 18px 12px 28px 12px;
-            text-align: center;
-            line-height: 1.3;
-        }
-
-        @keyframes bubblePop {
-            0% { transform: translateX(-50%) scale(0.5) translateY(30px); opacity: 0; }
-            100% { transform: translateX(-50%) scale(1) translateY(0); opacity: 1; }
-        }
-
-        /* Buttons Styling */
         .btn-choice {
-            padding: 0.85rem 2.2rem;
+            padding: 0.8rem 2rem;
             border-radius: 100px;
             border: none;
             font-family: var(--font-body);
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
-            transition: all 0.5s var(--easing-elastic);
-            white-space: nowrap;
+            transition: all 0.3s var(--easing);
+            position: relative;
+            will-change: transform;
         }
 
         .btn-yes {
             background: var(--gold-solid);
             color: #002b42;
-            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.25);
-            padding-left: 3.5rem; /* Padding cho sticker mặc định */
-        }
-
-        /* Sad State: Di chuyển nút Ok em vào ĐÚNG GÓC KHOANH TRÒN */
-        .modal-box.is-sad .btn-yes {
-            position: absolute;
-            right: 30px;
-            bottom: 30px;
-            padding-left: 2.2rem; /* Trở lại padding bình thường */
-            transform: scale(1.1);
-            z-index: 100;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
         }
 
         .btn-no {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.1);
             color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-choice:hover {
+            transform: translateY(-3px);
+            filter: brightness(1.1);
+        }
+
+        /* Animation rơi vỡ mượt hơn cho mobile */
+        @keyframes fallAndBreak {
+            0% { transform: translate3d(0, 0, 0) rotate(0); opacity: 1; }
+            100% { transform: translate3d(0, 400px, 0) rotate(45deg); opacity: 0; }
+        }
+
+        .falling {
+            animation: fallAndBreak 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+            pointer-events: none;
+        }
+
+        .follow-up-box {
+            display: none;
+            background: var(--gold-glow);
+            color: #fff;
+            padding: 0.8rem 1.5rem;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            margin-top: 1.5rem;
+            animation: fadeIn 0.5s var(--easing) forwards;
+            border: 1px dashed rgba(255,255,255,0.4);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         .close-modal-btn {
             position: absolute;
             top: 1.5rem;
             right: 1.5rem;
-            background: rgba(255,255,255,0.05);
+            background: transparent;
             border: none;
             color: var(--muted-foreground);
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: all 0.3s;
-            z-index: 100;
+            transition: color 0.3s;
         }
 
-        .close-modal-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
-
-        .animate-reveal { animation: fadeRise 1s var(--easing) forwards; }
+        .animate-1 { animation: fadeRise 0.8s var(--easing) forwards; }
         @keyframes fadeRise {
-            from { opacity: 0; transform: translateY(30px); }
+            from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
@@ -419,7 +335,7 @@
 <body>
 
     <div class="video-container">
-        <video autoplay loop muted playsinline preload="auto">
+        <video autoplay loop muted playsinline preload="metadata">
             <source src="265731_medium.mp4" type="video/mp4">
         </video>
     </div>
@@ -438,38 +354,25 @@
     </nav>
 
     <main class="hero">
-        <h1 class="animate-reveal">
+        <h1 class="animate-1">
             everything <em>happens</em> for <br>
             <em>a reason.</em>
         </h1>
     </main>
 
     <div id="journey-modal" class="modal-overlay">
-        <div class="modal-box" id="modal-box">
+        <div class="modal-box">
             <button id="close-modal" class="close-modal-btn">✕</button>
+            <h2 class="modal-title">A New Chapter</h2>
+            <p class="modal-subtext">Every step you take leads you closer to where you are meant to be.</p>
             
-            <div class="modal-content-wrapper" id="content-wrapper">
-                <h2 class="modal-title">Chương mới</h2>
-                <p class="modal-subtext">Mỗi bước chân bạn đi đều dẫn bạn đến gần hơn với nơi bạn thuộc về.</p>
+            <div id="choice-area" class="choice-container" style="display: none;">
+                <button class="btn-choice btn-yes" id="choice-yes">Ok em</button>
+                <button class="btn-choice btn-no" id="choice-no">Không</button>
             </div>
             
-            <div id="choice-area" class="interactive-area" style="display: none;">
-                <!-- Sticker & Bubble -->
-                <div id="sticker-container" class="sticker-box sticker-wiggle">
-                    <div id="speech-bubble" class="speech-bubble">
-                        <img src="Đồng chí Lâm không có giỡn nha!!! (2).png" alt="bubble">
-                        <p>Chị định chọn không thật à? 🥺</p>
-                    </div>
-                    <img id="main-sticker" src="Đồng chí Lâm không có giỡn nha!!!.jpg" alt="sticker">
-                </div>
-
-                <!-- Nhóm nút đồng ý -->
-                <div class="yes-group" id="yes-group">
-                    <button class="btn-choice btn-yes" id="choice-yes">Ok em</button>
-                </div>
-
-                <!-- Nút từ chối -->
-                <button class="btn-choice btn-no" id="choice-no">Không</button>
+            <div id="follow-up" class="follow-up-box">
+                Chị định chọn không thật à? 🥺
             </div>
         </div>
     </div>
@@ -477,45 +380,39 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const modal = document.getElementById('journey-modal');
-            const modalBox = document.getElementById('modal-box');
             const closeBtn = document.getElementById('close-modal');
             const modalTitle = document.querySelector('.modal-title');
             const modalSubtext = document.querySelector('.modal-subtext');
             const triggers = document.querySelectorAll('.trigger-modal');
             
-            const stickerContainer = document.getElementById('sticker-container');
-            const mainSticker = document.getElementById('main-sticker');
-            const speechBubble = document.getElementById('speech-bubble');
-            
             const choiceArea = document.getElementById('choice-area');
             const btnNo = document.getElementById('choice-no');
             const btnYes = document.getElementById('choice-yes');
+            const followUp = document.getElementById('follow-up');
             
-            const originalTitle = "Chào chị nhé";
-            const originalText = "Đây không phải là phần chính, chạm tay vào các đom đóm để biết thêm chi tiết.";
+            const originalTitle = "Em rất chào chị ạ!";
+            const originalText = "Đây không phải là phần chính, chị bắt mấy con đom đóm để biết thêm chi tiết nha =))))";
 
             const messages = {
-                "1": { title: "Duyên phận", text: "Cho em làm quen với chị được không ạ" },
-                "2": { title: "Làm quen", text: "Em có thể làm quen với chị được không =)))))" },
-                "3": { title: "Kết nối", text: "Chị làm quen với em được không =)))))" },
-                "4": { title: "Bắt chuyện", text: "Em nghĩ hoài vẫn không bắt chuyện được, nay đẹp trời chị cho em làm quen được không =))))" },
-                "5": { title: "Chào chị", text: "Cho em làm quen nhaaaa" }
+                "1": { title: "", text: "Cho em làm quen với chị được không ạ" },
+                "2": { title: "", text: "Em có thể làm quen với chị được không =)))))" },
+                "3": { title: "", text: "Chị làm quen với em được không =)))))" },
+                "4": { title: "", text: "Em nghĩ hoài vẫn không bắt chuyện được, nay đẹp trời chị cho em làm quen được không =))))" },
+                "5": { title: "", text: "Cho em làm quen nhaaaa" }
             };
 
-            const resetState = () => {
+            const resetChoices = () => {
                 choiceArea.style.display = 'none';
-                speechBubble.style.display = 'none';
-                mainSticker.src = "Đồng chí Lâm không có giỡn nha!!!.jpg";
-                stickerContainer.classList.remove('sad-sticker');
-                stickerContainer.classList.add('sticker-wiggle');
+                followUp.style.display = 'none';
+                btnNo.classList.remove('falling');
                 btnNo.style.display = 'inline-block';
-                modalBox.classList.remove('is-sad');
             };
 
+            // Mở modal thông thường (Begin Journey)
             triggers.forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    resetState();
+                    resetChoices();
                     modalTitle.innerText = originalTitle;
                     modalSubtext.innerText = originalText;
                     modal.classList.remove('highlight');
@@ -523,43 +420,45 @@
                 });
             });
 
+            // Xử lý khi bấm đom đóm
             document.querySelectorAll('.firefly').forEach(f => {
                 f.addEventListener('click', () => {
                     const id = f.getAttribute('data-id');
                     const content = messages[id];
+
                     f.classList.add('popped');
                     
-                    resetState();
+                    resetChoices();
                     modalTitle.innerText = content.title;
                     modalSubtext.innerText = content.text;
-                    choiceArea.style.display = 'flex'; 
+                    choiceArea.style.display = 'flex'; // Hiện nút lựa chọn
                     modal.classList.add('highlight');
                     
                     setTimeout(() => {
                         modal.classList.add('active');
-                    }, 150);
+                    }, 200);
 
                     setTimeout(() => f.classList.remove('popped'), 8000);
                 });
             });
 
-            // Logic khi chọn KHÔNG
+            // Logic cho nút "Không"
             btnNo.addEventListener('click', () => {
-                modalBox.classList.add('is-sad');
-                mainSticker.src = "Đồng chí Lâm không có giỡn nha!!! (1).jpg";
-                stickerContainer.classList.remove('sticker-wiggle');
-                stickerContainer.classList.add('sad-sticker');
-                speechBubble.style.display = 'block';
-                btnNo.style.display = 'none';
+                btnNo.classList.add('falling');
+                setTimeout(() => {
+                    btnNo.style.display = 'none';
+                    followUp.style.display = 'block';
+                }, 600);
             });
 
-            // Logic khi chọn OK EM
+            // Logic cho nút "Ok em"
             btnYes.addEventListener('click', () => {
-                resetState();
+                // Tối ưu Logic: Ẩn phần text follow-up khi người dùng chọn "Ok em"
+                followUp.style.display = 'none';
+                
                 modalTitle.innerText = "Tuyệt vời!";
-                modalSubtext.innerText = "Em biết là chị sẽ không nỡ từ chối mà =)))";
+                modalSubtext.innerText = "Thật không để em còn đi khoe =)))";
                 choiceArea.style.display = 'none';
-                modal.classList.add('highlight');
             });
 
             const closeModal = () => modal.classList.remove('active');
