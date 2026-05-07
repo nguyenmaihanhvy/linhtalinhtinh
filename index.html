@@ -5,8 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HanhVy | linhtalinhtinh</title>
     
-    <!-- Google Fonts - Đã tối ưu subset Vietnamese để không lỗi font -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap&subset=vietnamese" rel="stylesheet">
+    
+    <!-- Thư viện Pháo hoa (Confetti) -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     <style>
         /* 1. CSS VARIABLES */
@@ -34,7 +37,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; /* Tối ưu UX Mobile: bỏ highlight xanh khi chạm */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -44,7 +47,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* 2. VIDEO BACKGROUND */
+        /* 2. VIDEO BACKGROUND - Thêm Fallback gradient nếu video tải chậm */
         .video-container {
             position: absolute;
             inset: 0;
@@ -52,20 +55,22 @@
             height: 100%;
             z-index: 0;
             overflow: hidden;
+            background: linear-gradient(135deg, #001f30 0%, #003a5c 100%);
         }
 
         .video-container video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            will-change: transform; /* Tối ưu GPU */
+            will-change: transform;
+            opacity: 0.7; /* Làm tối video một chút để chữ nổi hơn */
         }
 
         .video-container::after {
             content: '';
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
             z-index: 1;
             pointer-events: none;
         }
@@ -87,9 +92,6 @@
             font-size: 1.875rem;
             letter-spacing: -0.02em;
         }
-
-        .nav-links { display: none; }
-        @media (min-width: 768px) { .nav-links { display: flex; gap: 2.5rem; } }
 
         .liquid-glass {
             background: var(--liquid-bg);
@@ -147,7 +149,7 @@
             text-shadow: 0 0 10px var(--gold-glow), 0 0 25px rgba(255, 215, 0, 0.3);
         }
 
-        /* 5. FIREFLIES - Tối ưu hiệu năng & Hit Area cho Mobile */
+        /* 5. FIREFLIES */
         .bubbles-container {
             position: absolute;
             inset: 0;
@@ -166,7 +168,6 @@
             will-change: transform, opacity;
         }
 
-        /* Hit area vô hình giúp chạm dễ hơn trên điện thoại */
         .firefly::after {
             content: '';
             position: absolute;
@@ -246,6 +247,23 @@
             margin-bottom: 2rem;
         }
 
+        /* STICKER ANIMATION */
+        .cute-sticker {
+            width: 140px;
+            max-width: 100%;
+            margin: 0 auto 15px auto;
+            display: block;
+            border-radius: 12px;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         /* Choice Buttons */
         .choice-container {
             display: flex;
@@ -263,46 +281,60 @@
             font-weight: 600;
             font-size: 0.95rem;
             cursor: pointer;
-            transition: all 0.3s var(--easing);
+            transition: transform 0.2s, background-color 0.3s, filter 0.3s;
             position: relative;
             will-change: transform;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .btn-yes {
             background: var(--gold-solid);
             color: #002b42;
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            z-index: 2;
         }
 
         .btn-no {
             background: rgba(255, 255, 255, 0.1);
             color: #fff;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 1;
+        }
+
+        /* Nút nhắn tin xuất hiện sau khi đồng ý */
+        .btn-action {
+            background: #fff;
+            color: #002b42;
+            margin-top: 1.5rem;
+            animation: fadeIn 0.8s var(--easing) forwards;
+            box-shadow: 0 5px 15px rgba(255,255,255,0.2);
         }
 
         .btn-choice:hover {
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.05);
             filter: brightness(1.1);
         }
 
-        /* Animation rơi vỡ mượt hơn cho mobile */
+        /* Animation rơi vỡ */
         @keyframes fallAndBreak {
             0% { transform: translate3d(0, 0, 0) rotate(0); opacity: 1; }
             100% { transform: translate3d(0, 400px, 0) rotate(45deg); opacity: 0; }
         }
 
         .falling {
-            animation: fallAndBreak 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards;
+            animation: fallAndBreak 0.8s cubic-bezier(0.55, 0.055, 0.675, 0.19) forwards !important;
             pointer-events: none;
         }
 
         .follow-up-box {
             display: none;
             background: var(--gold-glow);
-            color: #fff;
+            color: #002b42;
             padding: 0.8rem 1.5rem;
             border-radius: 16px;
             font-size: 0.95rem;
+            font-weight: 600;
             margin-top: 1.5rem;
             animation: fadeIn 0.5s var(--easing) forwards;
             border: 1px dashed rgba(255,255,255,0.4);
@@ -324,6 +356,10 @@
             cursor: pointer;
             transition: color 0.3s;
         }
+        
+        .close-modal-btn:hover {
+            color: #fff;
+        }
 
         .animate-1 { animation: fadeRise 0.8s var(--easing) forwards; }
         @keyframes fadeRise {
@@ -334,11 +370,18 @@
 </head>
 <body>
 
+    <!-- Thay mp4 của bạn vào src, mình thêm poster mờ để lót nền -->
     <div class="video-container">
-        <video autoplay loop muted playsinline preload="metadata">
-            <source src="265731_medium.mp4" type="video/mp4">
+        <video autoplay loop muted playsinline preload="metadata" poster="https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=2094&auto=format&fit=crop">
+            <source src="265877_medium.mp4" type="video/mp4">
         </video>
     </div>
+
+    <!-- Audio ngầm định (Nhạc Lofi nhẹ nhàng) -->
+    <!-- Bạn có thể thay link nhạc mp3 khác vào src -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+    </audio>
 
     <div class="bubbles-container">
         <div class="firefly f-1" data-id="1"></div>
@@ -364,7 +407,7 @@
         <div class="modal-box">
             <button id="close-modal" class="close-modal-btn">✕</button>
             <h2 class="modal-title">A New Chapter</h2>
-            <p class="modal-subtext">Every step you take leads you closer to where you are meant to be.</p>
+            <div class="modal-subtext" id="modal-desc">Every step you take leads you closer to where you are meant to be.</div>
             
             <div id="choice-area" class="choice-container" style="display: none;">
                 <button class="btn-choice btn-yes" id="choice-yes">Ok em</button>
@@ -372,7 +415,7 @@
             </div>
             
             <div id="follow-up" class="follow-up-box">
-                Chị định chọn không thật à? 🥺
+                Chị định chọn không thật ạ? 🥺
             </div>
         </div>
     </div>
@@ -382,7 +425,7 @@
             const modal = document.getElementById('journey-modal');
             const closeBtn = document.getElementById('close-modal');
             const modalTitle = document.querySelector('.modal-title');
-            const modalSubtext = document.querySelector('.modal-subtext');
+            const modalSubtext = document.getElementById('modal-desc');
             const triggers = document.querySelectorAll('.trigger-modal');
             
             const choiceArea = document.getElementById('choice-area');
@@ -390,15 +433,22 @@
             const btnYes = document.getElementById('choice-yes');
             const followUp = document.getElementById('follow-up');
             
+            const bgMusic = document.getElementById('bg-music');
+            let isMusicPlaying = false;
+            
+            // Biến đếm số lần nút Không "né"
+            let noEvadeCount = 0;
+            const MAX_EVADE = 5; 
+
             const originalTitle = "Em rất chào chị ạ!";
             const originalText = "Đây không phải là phần chính, chị bắt mấy con đom đóm để biết thêm chi tiết nha =))))";
 
             const messages = {
-                "1": { title: "", text: "Cho em làm quen với chị được không ạ" },
-                "2": { title: "", text: "Em có thể làm quen với chị được không =)))))" },
-                "3": { title: "", text: "Chị làm quen với em được không =)))))" },
-                "4": { title: "", text: "Em nghĩ hoài vẫn không bắt chuyện được, nay đẹp trời chị cho em làm quen được không =))))" },
-                "5": { title: "", text: "Cho em làm quen nhaaaa" }
+                "1": { title: "👋", text: "Cho phép em  được làm quen với chị nha" },
+                "2": { title: "👉👈", text: "Em có thể làm quen với chị được không ạ =)))" },
+                "3": { title: "🌟", text: "Em xin phép được làm quen với chị ạ" },
+                "4": { title: "💪", text: "Em nghĩ hoài vẫn không bắt chuyện được, nay đẹp trời chị cho em làm quen nhaaa " },
+                "5": { title: "🥺", text: "Cho em làm quen chị nhaaaa" }
             };
 
             const resetChoices = () => {
@@ -406,15 +456,27 @@
                 followUp.style.display = 'none';
                 btnNo.classList.remove('falling');
                 btnNo.style.display = 'inline-block';
+                btnNo.style.transform = 'translate(0, 0)';
+                noEvadeCount = 0; // Reset lại số lần né
+            };
+
+            // Hàm phát nhạc
+            const playMusic = () => {
+                if (!isMusicPlaying) {
+                    bgMusic.volume = 0.5; // Đặt âm lượng 50%
+                    bgMusic.play().catch(e => console.log("Trình duyệt chặn autoplay âm thanh."));
+                    isMusicPlaying = true;
+                }
             };
 
             // Mở modal thông thường (Begin Journey)
             triggers.forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     e.preventDefault();
+                    playMusic(); // Phát nhạc khi có tương tác đầu tiên
                     resetChoices();
                     modalTitle.innerText = originalTitle;
-                    modalSubtext.innerText = originalText;
+                    modalSubtext.innerHTML = originalText;
                     modal.classList.remove('highlight');
                     modal.classList.add('active');
                 });
@@ -423,6 +485,8 @@
             // Xử lý khi bấm đom đóm
             document.querySelectorAll('.firefly').forEach(f => {
                 f.addEventListener('click', () => {
+                    playMusic(); // Đảm bảo nhạc phát
+                    
                     const id = f.getAttribute('data-id');
                     const content = messages[id];
 
@@ -431,7 +495,7 @@
                     resetChoices();
                     modalTitle.innerText = content.title;
                     modalSubtext.innerText = content.text;
-                    choiceArea.style.display = 'flex'; // Hiện nút lựa chọn
+                    choiceArea.style.display = 'flex'; 
                     modal.classList.add('highlight');
                     
                     setTimeout(() => {
@@ -442,23 +506,71 @@
                 });
             });
 
-            // Logic cho nút "Không"
+            // Logic "Né tránh" cho nút Không (Hỗ trợ cả chuột và màn hình cảm ứng)
+            const evadeLogic = (e) => {
+                if (noEvadeCount < MAX_EVADE) {
+                    e.preventDefault(); // Chặn click
+                    
+                    // Tạo tọa độ ngẫu nhiên để nút nhảy (trong khoảng -80px đến 80px)
+                    const x = (Math.random() - 0.5) * 160;
+                    const y = (Math.random() - 0.5) * 100 - 30;
+                    
+                    btnNo.style.transform = `translate(${x}px, ${y}px)`;
+                    noEvadeCount++;
+                }
+            };
+
+            btnNo.addEventListener('mouseenter', evadeLogic);
+            btnNo.addEventListener('touchstart', evadeLogic);
+
+            // Khi đã né đủ số lần, cho phép click để rơi xuống
             btnNo.addEventListener('click', () => {
-                btnNo.classList.add('falling');
-                setTimeout(() => {
-                    btnNo.style.display = 'none';
-                    followUp.style.display = 'block';
-                }, 600);
+                if (noEvadeCount >= MAX_EVADE) {
+                    btnNo.classList.add('falling');
+                    setTimeout(() => {
+                        btnNo.style.display = 'none';
+                        followUp.style.display = 'block';
+                    }, 600);
+                }
             });
 
-            // Logic cho nút "Ok em"
+            // Logic cho nút "Ok em" (Bắn pháo hoa + Hiện nút nhắn tin + STICKER)
             btnYes.addEventListener('click', () => {
-                // Tối ưu Logic: Ẩn phần text follow-up khi người dùng chọn "Ok em"
                 followUp.style.display = 'none';
-                
-                modalTitle.innerText = "Tuyệt vời!";
-                modalSubtext.innerText = "Thật không để em còn đi khoe =)))";
                 choiceArea.style.display = 'none';
+                
+                modalTitle.innerText = "Tuyệt vời! 🎉";
+                
+                // Ở ĐÂY: Thêm Sticker Lay EXO và lời nhắn
+                modalSubtext.innerHTML = `
+                    <img src="Đồng chí Lâm không có giỡn nha!!!.png" alt="Lay EXO Sticker" class="cute-sticker">
+                    Thật không để em còn đi khoe =)))<br>
+                    <a href="https://www.facebook.com/concuatrenbo" class="btn-choice btn-action">
+                        FB của em nè kkkk
+                    </a>
+                `;
+
+                // Hiệu ứng pháo hoa bằng canvas-confetti
+                var duration = 3 * 1000;
+                var animationEnd = Date.now() + duration;
+                var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+                function randomInRange(min, max) {
+                  return Math.random() * (max - min) + min;
+                }
+
+                var interval = setInterval(function() {
+                  var timeLeft = animationEnd - Date.now();
+
+                  if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                  }
+
+                  var particleCount = 50 * (timeLeft / duration);
+                  // Bắn từ 2 bên mép màn hình
+                  confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                  confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                }, 250);
             });
 
             const closeModal = () => modal.classList.remove('active');
